@@ -18,7 +18,7 @@ export class CreateUserDto {
 
     @IsString({ message: 'نام نمایشی باید یک رشته باشد' })
     @IsNotEmpty({ message: 'نام نمایشی نباید خالی باشد' })
-    displayName: string;
+    display_name: string;
 
     @IsString({ message: 'رمز عبور باید یک رشته باشد' })
     @IsOptional()
