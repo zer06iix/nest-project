@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,9 +13,13 @@ export class UsersService {
     ) {}
 
     async create(createUserDto: CreateUserDto) {
-        const newUser = await this.userRepository.create(createUserDto);
-
-        return await this.userRepository.save(newUser);
+        try {
+            const newUser = await this.userRepository.create(createUserDto);
+    
+            return await this.userRepository.save(newUser);
+        } catch (error) {
+            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+        }
     }
 
     findAll() {
