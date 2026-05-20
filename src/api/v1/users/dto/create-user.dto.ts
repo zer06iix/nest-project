@@ -14,11 +14,11 @@ export class CreateUserDto {
     @Matches(/^.{11}$/, { message: 'شماره موبایل باید 11 رقم باشد' })
     @IsNotEmpty({ message: 'شماره موبایل نمیتواند خالی باشد' })
     @Transform(({ value }) => value.trim())
-    phone_number: string;
+    phoneNumber: string;
 
     @IsString({ message: 'نام نمایشی باید یک رشته باشد' })
     @IsNotEmpty({ message: 'نام نمایشی نباید خالی باشد' })
-    display_name: string;
+    displayName: string;
 
     @IsString({ message: 'رمز عبور باید یک رشته باشد' })
     @IsOptional()

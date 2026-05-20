@@ -12,11 +12,11 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({ unique: true })
-    phone_number: string;
+    @Column({ name: 'phone_number', unique: true })
+    phoneNumber: string;
 
-    @Column({ nullable: false })
-    display_name: string;
+    @Column({ name: 'display_name', nullable: false })
+    displayName: string;
 
     @Column({
         type: 'enum',
@@ -28,9 +28,9 @@ export class User {
     @Column({ nullable: true })
     password: string;
 
-    @CreateDateColumn()
-    created_at: Date;
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt: Date;
 
-    @UpdateDateColumn()
-    updated_at: Date;
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt: Date;
 }
