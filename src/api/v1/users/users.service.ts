@@ -1,9 +1,10 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { Roles } from './enums/RoleEnum';
 
 @Injectable()
 export class UsersService {
@@ -14,19 +15,32 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto) {
         try {
-            const newUser = await this.userRepository.create(createUserDto);
-    
-            return await this.userRepository.save(newUser);
+            const newUser = this.userRepository.create(createUserDto);
+            const savedUser = await this.userRepository.save(newUser);
+
+            return savedUser;
         } catch (error) {
+            console.log(error)
             throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
         }
     }
 
-    async findAll() {
+    async findAll(
+        role?: Roles,
+        limit: number = 20,
+        page: number = 1
+    ) {
         try {
-            const users = await this.userRepository.find()
+            const query = this.userRepository.createQueryBuilder('users');
+            if (role) {
+                query.where('users.role = :role', { role: role });
+            }
+
+            query.skip((page - 1) * limit).take(limit);
+
+            return await query.getMany();
         } catch (error) {
-            
+            return error.message;
         }
     }
 
