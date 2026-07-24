@@ -36,25 +36,54 @@ export class UsersController {
 
     @Get()
     async findAll(
+        @Res() res: Response,
         @Query('role') role?: Roles,
         @Query('limit', new DefaultValuePipe(20),ParseIntPipe) limit?: number,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     ) {
-        return await this.usersService.findAll(role, limit, page);
+        const users = await this.usersService.findAll(role, limit, page);
+
+        return res.status(HttpStatus.OK).json({
+            success: true,
+            status_code: HttpStatus.OK,
+            data: users,
+            message: `لیست کابران با موفقیت پیدا شد`
+        })
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.usersService.findOne(+id);
+    async findOne(@Param('id') id: string, @Res() res: Response) {
+        const user = await this.usersService.findOne(id);
+
+        return res.status(HttpStatus.OK).json({
+            success: true,
+            status_code: HttpStatus.OK,
+            data: user,
+            message: "کاربر با موفقیت پیدا شد"
+        })
     }
 
     @Patch(':id')
-    update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-        return this.usersService.update(+id, updateUserDto);
+    async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Res() res: Response) {
+        const user = await this.usersService.update(+id, updateUserDto);
+
+        return res.status(HttpStatus.OK).json({
+            success: true,
+            status_code: HttpStatus.OK,
+            data: user,
+            message: "کاربر با موفقیت بروزرسانی شد"
+        })
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.usersService.remove(+id);
+    async remove(@Param('id') id: string, @Res() res: Response) {
+        const user = await this.usersService.remove(id);
+
+        return res.status(HttpStatus.OK).json({
+            success: true,
+            status_code: HttpStatus.OK,
+            data: user,
+            message: "کاربر با موفقیت حذف شد"
+        })
     }
 }
