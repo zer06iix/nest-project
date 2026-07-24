@@ -44,15 +44,16 @@ export class UsersService {
         }
     }
 
-    findOne(id: number) {
-        return `This action returns a #${id} user`;
+    async findOne(id: string) {
+        const user = await this.userRepository.findOneBy({ id: id })
+        return user;
     }
 
-    update(id: number, updateUserDto: UpdateUserDto) {
-        return `This action updates a #${id} user`;
+    async update(id: number, updateUserDto: UpdateUserDto) {
+        const updatedUser = await this.userRepository.update(id, new UpdateUserDto)
     }
 
-    remove(id: number) {
-        return `This action removes a #${id} user`;
+    async remove(id: string) {
+        return await this.userRepository.delete({ id: id });
     }
 }
