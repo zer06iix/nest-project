@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -40,20 +40,48 @@ export class UsersService {
 
             return await query.getMany();
         } catch (error) {
-            return error.message;
+            console.log(error)
+            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
         }
     }
 
     async findOne(id: string) {
-        const user = await this.userRepository.findOneBy({ id: id })
-        return user;
+        try {
+            const user = await this.userRepository.findOneBy({ id })
+    
+            if (!user) throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
+    
+            return user;
+        } catch (error) {
+            console.log(error)
+            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+        }
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto) {
-        const updatedUser = await this.userRepository.update(id, new UpdateUserDto)
+    async update(id: string, updateUserDto: UpdateUserDto) {
+        try {
+            await this.userRepository.update(id, {
+                displayName: updateUserDto.displayName,
+                role: updateUserDto.role
+            });
+            const user = await this.findOne(id);
+            
+            return user;
+        } catch (error) {
+            console.log(error)
+            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+        }
     }
 
     async remove(id: string) {
-        return await this.userRepository.delete({ id: id });
+        try {
+            const result = await this.userRepository.delete({ id });
+            
+            if (result.affected === 0) 
+                throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
+        } catch (error) {
+            console.log(error)
+            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+        }
     }
 }

@@ -65,7 +65,7 @@ export class UsersController {
 
     @Patch(':id')
     async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto, @Res() res: Response) {
-        const user = await this.usersService.update(+id, updateUserDto);
+        const user = await this.usersService.update(id, updateUserDto);
 
         return res.status(HttpStatus.OK).json({
             success: true,
@@ -82,7 +82,7 @@ export class UsersController {
         return res.status(HttpStatus.OK).json({
             success: true,
             status_code: HttpStatus.OK,
-            data: user,
+            data: null,
             message: "کاربر با موفقیت حذف شد"
         })
     }
