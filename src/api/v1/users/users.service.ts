@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,9 +15,14 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto) {
         try {
+            const existingUser = await this.userRepository.findOne(
+                { where: { phoneNumber: createUserDto.phoneNumber } }
+            );
+            if (existingUser) throw new ConflictException("کاربر با این مشخصات وجود دارد")
+            
             const newUser = this.userRepository.create(createUserDto);
             const savedUser = await this.userRepository.save(newUser);
-
+            
             return savedUser;
         } catch (error) {
             console.log(error)
@@ -33,7 +38,7 @@ export class UsersService {
         try {
             const query = this.userRepository.createQueryBuilder('users');
             if (role) {
-                query.where('users.role = :role', { role: role });
+                query.where('users.role = :role', { role });
             }
 
             query.skip((page - 1) * limit).take(limit);
@@ -41,11 +46,11 @@ export class UsersService {
             return await query.getMany();
         } catch (error) {
             console.log(error)
-            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+            throw new BadRequestException("هنگام پیدا کردن کاربران مشکلی رخ داد")
         }
     }
 
-    async findOne(id: string) {
+    async findOneById(id: string) {
         try {
             const user = await this.userRepository.findOneBy({ id })
     
@@ -54,7 +59,20 @@ export class UsersService {
             return user;
         } catch (error) {
             console.log(error)
-            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+            throw new BadRequestException("هنگام پیدا کردن کاربر مشکلی رخ داد")
+        }
+    }
+
+    async findOneByPhone(phoneNumber: string) {
+        try {
+            const user = await this.userRepository.findOneBy({ phoneNumber })
+    
+            if (!user) throw new NotFoundException(`کاربر با شماره تماس ${phoneNumber} پیدا نشد`);
+    
+            return user;
+        } catch (error) {
+            console.log(error)
+            throw new BadRequestException("هنگام پیدا کردن کاربر مشکلی رخ داد")
         }
     }
 
@@ -64,12 +82,12 @@ export class UsersService {
                 displayName: updateUserDto.displayName,
                 role: updateUserDto.role
             });
-            const user = await this.findOne(id);
+            const user = await this.findOneById(id);
             
             return user;
         } catch (error) {
             console.log(error)
-            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+            throw new BadRequestException("هنگام بروزرستنی کاربر مشکلی رخ داد")
         }
     }
 
@@ -81,7 +99,7 @@ export class UsersService {
                 throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
         } catch (error) {
             console.log(error)
-            throw new BadRequestException("هنگام ایجاد کاربر مشکلی رخ داد")
+            throw new BadRequestException("هنگام حذف کاربر مشکلی رخ داد")
         }
     }
 }
