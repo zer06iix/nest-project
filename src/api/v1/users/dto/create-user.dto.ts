@@ -4,6 +4,7 @@ import {
     IsOptional,
     IsString,
     Matches,
+    MaxLength,
     MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
@@ -23,6 +24,7 @@ export class CreateUserDto {
     @IsString({ message: 'رمز عبور باید یک رشته باشد' })
     @IsOptional()
     @MinLength(6, { message: 'رمز عبور باید حداقل 6 کاراکتر داشته باشد' })
+    @MaxLength(20, { message: 'رمز عبور باید حداکثر 20 کاراکتر داشته باشد' })
     password?: string;
 
     @IsEnum(Roles, {
