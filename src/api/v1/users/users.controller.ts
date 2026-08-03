@@ -9,14 +9,22 @@ import {
     Query,
     ParseIntPipe,
     DefaultValuePipe,
+    UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from '../common/enums/role.enum';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { RoleGuard } from '../common/guards/role.guard';
+import { Role } from '../common/decorators/role.decorator';
 
 
+@UseGuards(
+    AuthGuard('jwt'),
+    RoleGuard,
+)
 @Controller('users')
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
@@ -29,10 +37,11 @@ export class UsersController {
     }
 
     @Get()
+    @Role(Roles.ADMIN)
     @ResponseMessage('لیست کابران با موفقیت پیدا شد`')
     async findAll(
         @Query('role') role?: Roles,
-        @Query('limit', new DefaultValuePipe(20),ParseIntPipe) limit?: number,
+        @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     ) {
         const users = await this.usersService.findAll(role, limit, page);
