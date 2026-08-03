@@ -8,7 +8,7 @@ import {
     MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Roles } from '../enums/RoleEnum';
+import { Roles } from '../../common/enums/role.enum';
 
 export class CreateUserDto {
     @IsString({ message: 'شماره موبایل باید یک رشته باشد' })

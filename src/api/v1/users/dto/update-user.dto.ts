@@ -1,5 +1,5 @@
 import { IsString, IsNotEmpty, IsOptional, IsEnum } from "class-validator";
-import { Roles } from "../enums/RoleEnum";
+import { Roles } from "../../common/enums/role.enum";
 
 export class UpdateUserDto {
     @IsString({ message: 'نام نمایشی باید یک رشته باشد' })
