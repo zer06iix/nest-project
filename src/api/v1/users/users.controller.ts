@@ -14,11 +14,11 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Roles } from '../common/enums/role.enum';
+import { Role } from '../common/enums/role.enum';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
 import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../common/guards/role.guard';
-import { Role } from '../common/decorators/role.decorator';
+import { Roles } from '../common/decorators/role.decorator';
 
 
 @UseGuards(
@@ -37,10 +37,10 @@ export class UsersController {
     }
 
     @Get()
-    @Role(Roles.ADMIN)
+    @Roles(Role.ADMIN)
     @ResponseMessage('لیست کابران با موفقیت پیدا شد`')
     async findAll(
-        @Query('role') role?: Roles,
+        @Query('role') role?: Role,
         @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
         @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
     ) {

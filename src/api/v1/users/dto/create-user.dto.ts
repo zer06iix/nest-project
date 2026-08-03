@@ -8,7 +8,7 @@ import {
     MinLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
-import { Roles } from '../../common/enums/role.enum';
+import { Role } from '../../common/enums/role.enum';
 
 export class CreateUserDto {
     @IsString({ message: 'شماره موبایل باید یک رشته باشد' })
@@ -27,9 +27,9 @@ export class CreateUserDto {
     @MaxLength(20, { message: 'رمز عبور باید حداکثر 20 کاراکتر داشته باشد' })
     password?: string;
 
-    @IsEnum(Roles, {
+    @IsEnum(Role, {
         message: 'نقش کاربر باید یکی از این مقادیر باشد: (user, admin)',
     })
     @IsOptional()
-    role?: Roles;
+    role?: Role;
 }
