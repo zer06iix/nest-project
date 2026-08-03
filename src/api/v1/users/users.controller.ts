@@ -21,11 +21,9 @@ import { RoleGuard } from '../common/guards/role.guard';
 import { Roles } from '../common/decorators/role.decorator';
 
 
-@UseGuards(
-    AuthGuard('jwt'),
-    RoleGuard,
-)
 @Controller('users')
+@UseGuards(AuthGuard('jwt'), RoleGuard)
+@Roles(Role.USER)
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
@@ -37,8 +35,7 @@ export class UsersController {
     }
 
     @Get()
-    @Roles(Role.ADMIN)
-    @ResponseMessage('لیست کابران با موفقیت پیدا شد`')
+    @ResponseMessage('لیست کابران با موفقیت دریافت شد`')
     async findAll(
         @Query('role') role?: Role,
         @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
