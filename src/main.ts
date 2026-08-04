@@ -4,8 +4,16 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { TransformInterceptor } from './api/v1/common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './api/v1/common/filters/http-exception.filter';
 
+
+declare const module: any;
+
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+
+    if (module.hot) {
+        module.hot.accept();
+        module.hot.dispose(() => app.close());
+    }
 
     app.useGlobalPipes(
         new ValidationPipe({
