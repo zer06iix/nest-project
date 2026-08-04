@@ -23,7 +23,7 @@ import { Roles } from '../common/decorators/role.decorator';
 
 @Controller('users')
 @UseGuards(AuthGuard('jwt'), RoleGuard)
-@Roles(Role.USER)
+@Roles(Role.ADMIN)
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}
 
