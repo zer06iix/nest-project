@@ -1,5 +1,6 @@
 import { Module, MiddlewareConsumer, RequestMethod} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { SentryModule } from '@sentry/nestjs/setup'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './api/v1/users/users.module';
 import { AuthModule } from './api/v1/auth/auth.module';
@@ -11,6 +12,8 @@ import { UsersController } from './api/v1/users/users.controller';
         ConfigModule.forRoot({
             isGlobal: true,
         }),
+
+        // SentryModule.forRoot(),
 
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],

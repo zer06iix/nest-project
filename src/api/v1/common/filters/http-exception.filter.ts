@@ -1,5 +1,5 @@
 import {
-    ArgumentsHost,
+    type ArgumentsHost,
     ExceptionFilter,
     HttpStatus,
     HttpException,
@@ -10,6 +10,7 @@ import {
     ForbiddenException,
     ConflictException,
 } from "@nestjs/common";
+// import { SentryExceptionCaptured } from '@sentry/nestjs';
 import { Request, Response } from "express";
 import { QueryFailedError } from "typeorm";
 
@@ -39,6 +40,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         [QueryFailedError, exception => this.handleDatabaseError(exception)],
     ]);
     
+    // @SentryExceptionCaptured() 
     catch(exception: unknown, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const request = ctx.getRequest<Request>()
