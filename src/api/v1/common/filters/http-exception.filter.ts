@@ -26,7 +26,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
         })],
         [UnauthorizedException, (exception: UnauthorizedException) => ({
             status: HttpStatus.UNAUTHORIZED,
-            message: exception.message,
+            message: exception.message === "Unauthorized" 
+                ? "لطفا وارد حساب خود شوید" 
+                : exception.message,
         })],
         [ForbiddenException, (exception: ForbiddenException) => ({
             status: HttpStatus.FORBIDDEN,

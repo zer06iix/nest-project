@@ -5,12 +5,14 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { TransformInterceptor } from './api/v1/common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './api/v1/common/filters/http-exception.filter';
+import cookieParser from 'cookie-parser';
 
 
 declare const module: any;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
+    app.use(cookieParser());
 
     if (module.hot) {
         module.hot.accept();
@@ -33,6 +35,7 @@ async function bootstrap() {
         type: VersioningType.URI,
         defaultVersion: process.env.API_VERSION,
     });
+
     
     const config = new DocumentBuilder()
         .setTitle('فروشگاه لباس api')

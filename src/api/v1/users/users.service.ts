@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -64,6 +64,12 @@ export class UsersService {
         const user = await this.findOneById(id);
         
         return user;
+    }
+
+    async updateHashedRefreshToken(id: string, hashedRefreshToken: string | null) {
+        if (hashedRefreshToken === undefined) throw new NotFoundException('توکنی پیدا نشد');
+
+        await this.userRepository.update(id, { hashedRefreshToken });
     }
 
     async remove(id: string) {

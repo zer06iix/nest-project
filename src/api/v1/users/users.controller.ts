@@ -16,16 +16,16 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Role } from '../common/enums/role.enum';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { RoleGuard } from '../common/guards/role.guard';
 import { Roles } from '../common/decorators/role.decorator';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 
 
 @ApiTags('Users - مدیریت کاربران')
 @ApiBearerAuth('jwt')
 @Controller('users')
-@UseGuards(AuthGuard('jwt'), RoleGuard)
+@UseGuards(JwtAccessGuard, RoleGuard)
 @Roles(Role.ADMIN)
 export class UsersController {
     constructor(private readonly usersService: UsersService) {}

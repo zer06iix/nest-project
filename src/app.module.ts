@@ -6,6 +6,8 @@ import { UsersModule } from './api/v1/users/users.module';
 import { AuthModule } from './api/v1/auth/auth.module';
 import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware';
 import { UsersController } from './api/v1/users/users.controller';
+// import { RedisModule } from './api/v1/redis/redis.module';
+import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.module';
 
 @Module({
     imports: [
@@ -31,7 +33,9 @@ import { UsersController } from './api/v1/users/users.controller';
         }),
 
         UsersModule,
-        AuthModule
+        AuthModule,
+        // RedisModule,
+        TokenBlacklistModule,
     ],
 })
 export class AppModule {
