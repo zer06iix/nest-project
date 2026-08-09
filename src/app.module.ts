@@ -8,6 +8,8 @@ import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware'
 import { UsersController } from './api/v1/users/users.controller';
 // import { RedisModule } from './api/v1/redis/redis.module';
 import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.module';
+import { AddressesModule } from './api/v1/addresses/addresses.module';
+import { AddressesController } from './api/v1/addresses/addresses.controller';
 
 @Module({
     imports: [
@@ -27,13 +29,15 @@ import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.mo
                 username: configService.get<string>('DB_USERNAME'),
                 password: configService.get<string>('DB_PASSWORD'),
                 database: configService.get<string>('DB_DATABASE'),
-                autoLoadEntities: true,
+                // autoLoadEntities: true,
+                entities: [__dirname + '/**/*.entity{.ts,.js}'],
                 synchronize: true,
             }),
         }),
 
         UsersModule,
         AuthModule,
+        AddressesModule,
         // RedisModule,
         TokenBlacklistModule,
     ],
@@ -42,6 +46,6 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(LoggerMiddleware)
-            .forRoutes(UsersController)
+            .forRoutes(UsersController, AddressesController)
     }
 }
