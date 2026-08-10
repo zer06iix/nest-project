@@ -52,6 +52,7 @@ export class AuthController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Post('logout')
     @ResponseMessage('با موفقیت از حساب خود خارج شدید')
+    @ApiOperation({ summary: "خروج از حساب" })
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
