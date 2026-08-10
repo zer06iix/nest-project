@@ -28,7 +28,7 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 @UseGuards(JwtAccessGuard, RoleGuard)
 @Roles(Role.ADMIN)
 export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor( private readonly usersService: UsersService) {}
 
     @Post()
     @ResponseMessage("کاربر با موفقیت ساخته شد")
