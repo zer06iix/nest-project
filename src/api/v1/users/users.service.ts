@@ -41,7 +41,7 @@ export class UsersService {
     }
 
     async findOneById(id: string) {
-        const user = await this.userRepository.findOneBy({ id })
+        const user = await this.userRepository.findOne({ where: { id }, relations: ['addresses'] })
 
         if (!user) throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
 
