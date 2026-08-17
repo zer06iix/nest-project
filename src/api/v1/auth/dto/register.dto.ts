@@ -18,7 +18,7 @@ export class RegisterDto {
     @Matches(/^.{11}$/, { message: 'شماره موبایل باید 11 رقم باشد' })
     @IsNotEmpty({ message: 'شماره موبایل نمیتواند خالی باشد' })
     @Transform(({ value }) => value.trim())
-    phoneNumber: string;
+    phoneNumber!: string;
     
     @ApiProperty({
         description: "نام نمایشی",
@@ -26,7 +26,7 @@ export class RegisterDto {
     })
     @IsString({ message: 'نام نمایشی باید یک رشته باشد' })
     @IsNotEmpty({ message: 'نام نمایشی نباید خالی باشد' })
-    displayName: string;
+    displayName!: string;
     
     @ApiProperty({
         description: "رمز عبور(حداقل 6 رقم)",
@@ -36,5 +36,5 @@ export class RegisterDto {
     @IsNotEmpty({ message: 'رمز عبور نمیتواند خالی باشد' })
     @MinLength(6, { message: 'رمز عبور باید حداقل 6 کاراکتر داشته باشد' })
     @MaxLength(20, { message: 'رمز عبور باید حداکثر 20 کاراکتر داشته باشد' })
-    password: string;
+    password!: string;
 }

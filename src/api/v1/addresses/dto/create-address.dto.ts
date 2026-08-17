@@ -15,7 +15,7 @@ export class CreateAddressDto {
     })
     @IsString({ message: 'استان باید یک رشته باشد' })
     @IsNotEmpty({ message: 'استان نباید خالی باشد' })
-    province: string
+    province!: string
 
     @ApiProperty({
         description: "شهر",
@@ -23,7 +23,7 @@ export class CreateAddressDto {
     })
     @IsString({ message: 'شهر باید یک رشته باشد' })
     @IsNotEmpty({ message: 'شهر نباید خالی باشد' })
-    city: string
+    city!: string
 
     @ApiProperty({
         description: "ادرس",
@@ -31,7 +31,7 @@ export class CreateAddressDto {
     })
     @IsString({ message: 'ادرس باید یک رشته باشد' })
     @IsNotEmpty({ message: 'ادرس نباید خالی باشد' })
-    address: string
+    address!: string
 
     @ApiProperty({
         description: "کد پستی",
@@ -40,7 +40,7 @@ export class CreateAddressDto {
     @IsString({ message: 'کد پستی باید یک رشته باشد' })
     @Length(10, 10, { message: "کد پستی باید 10 رقم باشد" })
     @IsNotEmpty({ message: 'کد پستی نباید خالی باشد' })
-    postalCode: string
+    postalCode!: string
 
     @ApiProperty({
         description: "شماره تماس 11 رقمی",
@@ -49,7 +49,7 @@ export class CreateAddressDto {
     @IsString({ message: 'شماره موبایل باید یک رشته باشد' })
     @Matches(/^.{11}$/, { message: 'شماره موبایل باید 11 رقم باشد' })
     @IsNotEmpty({ message: 'شماره موبایل نباید خالی باشد' })
-    receiverMobile: string
+    receiverMobile!: string
 
     @ApiPropertyOptional({
         description: "توضیحات",
