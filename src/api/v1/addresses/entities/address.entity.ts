@@ -34,7 +34,7 @@ export class Address {
     description!: string
 
     @ManyToOne(() => User, (user) => user.addresses)
-    @JoinColumn()
+    @JoinColumn({ name: 'user_id' })
     user!: User
 
     @CreateDateColumn({ name: 'created_at' })
