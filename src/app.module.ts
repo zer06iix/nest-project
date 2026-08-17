@@ -4,12 +4,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './api/v1/users/users.module';
 import { AuthModule } from './api/v1/auth/auth.module';
-import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware';
-import { UsersController } from './api/v1/users/users.controller';
+import { AddressesModule } from 'api/v1/addresses/addresses.module';
+import { TicketsModule } from 'api/v1/tickets/tickets.module';
 // import { RedisModule } from './api/v1/redis/redis.module';
 import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.module';
-import { AddressesModule } from './api/v1/addresses/addresses.module';
-import { AddressesController } from './api/v1/addresses/addresses.controller';
+import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware';
 
 @Module({
     imports: [
@@ -38,6 +37,7 @@ import { AddressesController } from './api/v1/addresses/addresses.controller';
         UsersModule,
         AuthModule,
         AddressesModule,
+        TicketsModule,
         // RedisModule,
         TokenBlacklistModule,
     ],
@@ -46,6 +46,10 @@ export class AppModule {
     configure(consumer: MiddlewareConsumer) {
         consumer
             .apply(LoggerMiddleware)
-            .forRoutes(UsersController, AddressesController)
+            .forRoutes(
+                'users',
+                'addresses',
+                'tickets',
+            )
     }
 }

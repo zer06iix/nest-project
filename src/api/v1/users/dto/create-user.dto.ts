@@ -20,7 +20,7 @@ export class CreateUserDto {
     @Matches(/^.{11}$/, { message: 'شماره موبایل باید 11 رقم باشد' })
     @IsNotEmpty({ message: 'شماره موبایل نمیتواند خالی باشد' })
     @Transform(({ value }) => value.trim())
-    phoneNumber: string;
+    phoneNumber!: string;
 
     @ApiProperty({
         description: "نام نمایشی",
@@ -28,7 +28,7 @@ export class CreateUserDto {
     })
     @IsString({ message: 'نام نمایشی باید یک رشته باشد' })
     @IsNotEmpty({ message: 'نام نمایشی نباید خالی باشد' })
-    displayName: string;
+    displayName!: string;
 
     @ApiPropertyOptional({
         description: "رمز عبور(حداقل 6 رقم)",
