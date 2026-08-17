@@ -17,13 +17,12 @@ export class AddressesService {
         private readonly addressRepository: Repository<Address>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        private readonly userService: UsersService,
+        private readonly userService: UsersService
     ) {}
 
     async create(createAddressDto: CreateAddressDto, userId: string) {
         const user = await this.userService.findOneById(userId);
-        console.log(user)
-
+        
         const address = this.addressRepository.create({ ...createAddressDto, user });
         return this.addressRepository.save(address);
     }
@@ -37,8 +36,10 @@ export class AddressesService {
     }
 
     async findUserAddresses(userId: string) {
-        const user = await this.userService.findOneById(userId);
-        console.log(user)
+        const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['addresses'] });
+
+        if (!user) throw new NotFoundException(`کاربر با آیدی ${userId} پیدا نشد`);
+
         return user.addresses;
     }
 

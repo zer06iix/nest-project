@@ -73,6 +73,6 @@ export class AddressesController {
     @ResponseMessage('ادرس با موفقیت حدف شد')
     @ApiOperation({ summary: "حدف کردن یک آدرس" })
     async remove(@Param('id') id: string) {
-        return await this.addressesService.remove(id);
+        await this.addressesService.remove(id);
     }
 }
