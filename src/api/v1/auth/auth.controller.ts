@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { AuthService } from "./auth.service";
@@ -18,6 +18,7 @@ export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
     @Post('register')
+    @HttpCode(HttpStatus.CREATED)
     @ResponseMessage('با موفقیت ثبت نام کردید')
     @ApiOperation({ summary: "ثبت نام" })
     @ApiBody({ type: RegisterDto })
@@ -31,6 +32,7 @@ export class AuthController {
     }
     
     @Post('login')
+    @HttpCode(HttpStatus.OK)
     @ResponseMessage('با موفقیت وارد شدید')
     @ApiOperation({ summary: "وارد شدن" })
     @ApiBody({ type: LoginDto })
@@ -51,6 +53,7 @@ export class AuthController {
 
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Post('logout')
+    @HttpCode(HttpStatus.OK)
     @ResponseMessage('با موفقیت از حساب خود خارج شدید')
     @ApiOperation({ summary: "خروج از حساب" })
     async logout(
@@ -59,13 +62,14 @@ export class AuthController {
         @GetToken() accessToken: string
     ) {
         const user = req.user as { userId: string };
-
+        
         await this.authService.logout(accessToken, user.userId);
         res.clearCookie('refresh_token');
     }
-
+    
     @UseGuards(JwtRefreshGuard, RoleGuard)
     @Post('refresh')
+    @HttpCode(HttpStatus.OK)
     @ResponseMessage('توکن با موفقیت تمدید شد')
     @ApiOperation({ summary: 'رفرش کردن توکن' })
     async refresh(
