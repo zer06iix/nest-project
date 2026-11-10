@@ -22,12 +22,14 @@ export class TicketsService {
     async create(createTicketDto: CreateTicketDto, userId: string) {
         const ticket = this.ticketRepository.create({ ...createTicketDto, userId})
         
-
         return await this.ticketRepository.save(ticket);
     }
 
     async findOne(id: string) {
-        const ticket = await this.ticketRepository.findOneByOrFail({ id });
+        const ticket = await this.ticketRepository.findOne({ 
+            where: { id },
+            relations: { user: true, assignedTo: true, messages: { sender: true } }
+        });
 
         if (!ticket) throw new NotFoundException(`تیکت با آیدی ${id} پیدا نشد`);
 
