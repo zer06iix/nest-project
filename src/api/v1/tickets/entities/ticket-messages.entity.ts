@@ -14,6 +14,9 @@ export class TicketMessage {
     @Column({ nullable: false, name: 'sender_id' })
     senderId!: string;
 
+    @Column({ type: 'text', nullable: false })
+    body!: string;
+
     @ManyToOne(() => Ticket, (ticket) => ticket.messages, {
         onDelete: 'CASCADE',
     })

@@ -5,7 +5,6 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
-    JoinColumn,
 } from 'typeorm';
 import { Address } from '../../addresses/entities/address.entity';
 import { Role } from '../../common/enums/role.enum';
@@ -34,19 +33,16 @@ export class User {
     @Column({ nullable: true })
     password!: string;
     
-    @OneToMany(() => Address, (address) => address.user, { nullable: true })
+    @OneToMany(() => Address, (address) => address.user)
     addresses!: Address[];
 
-    @OneToMany(() => Ticket, (ticket) => ticket.user, { nullable: true })
-    @JoinColumn({ name: 'tickets_created' })
+    @OneToMany(() => Ticket, (ticket) => ticket.user)
     ticketsCreated!: Ticket[];
 
-    @OneToMany(() => Ticket, (ticket) => ticket.user, { nullable: true })
-    @JoinColumn({ name: 'tickets_assigned' })
+    @OneToMany(() => Ticket, (ticket) => ticket.assignedTo)
     ticketsAssigned!: Ticket[];
 
-    @OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.sender, { nullable: true })
-    @JoinColumn({ name: 'ticket_messages' })
+    @OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.sender)
     ticketMessages!: TicketMessage[];
 
     @Column({ type: "varchar", name: 'hashed_refresh_token', nullable: true })

@@ -33,7 +33,7 @@ export class Ticket {
     @JoinColumn({ name: 'user_id' })
     user!: User;
 
-    @ManyToOne(() => User, (user) => user.ticketsAssigned)
+    @ManyToOne(() => User, (user) => user.ticketsAssigned, { nullable: true })
     @JoinColumn({ name: 'assigned_to_id' })
     assignedTo?: User;
     
@@ -46,6 +46,6 @@ export class Ticket {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
 
-    @Column({ name: 'closed_at', nullable: true, type: 'date' })
+    @Column({ name: 'closed_at', nullable: true, type: 'datetime' })
     closedAt?: Date
 }
