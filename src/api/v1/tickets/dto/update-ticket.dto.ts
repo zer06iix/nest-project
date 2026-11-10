@@ -1,5 +1,20 @@
-import { PartialType } from "@nestjs/mapped-types";
-import { CreateTicketDto } from "./create-ticket.dto";
+import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { TicketStatus } from '../enums/ticket-status.enum';
 
+export class UpdateTicketDto {
+    @IsOptional()
+    @IsEnum(TicketStatus)
+    status?: TicketStatus;
 
-export class UpdateTicketDto extends PartialType(CreateTicketDto) {}
+    @IsOptional()
+    @IsUUID()
+    assignedToId?: string;
+
+    @IsOptional()
+    @IsString()
+    subject?: string;
+
+    @IsOptional()
+    @IsString()
+    description?: string;
+}
