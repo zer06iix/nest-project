@@ -36,7 +36,10 @@ export class AddressesService {
     }
 
     async findUserAddresses(userId: string) {
-        const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['addresses'] });
+        const user = await this.userRepository.findOne({
+            where: { id: userId },
+            relations: { addresses: true },
+        });
 
         if (!user) throw new NotFoundException(`کاربر با آیدی ${userId} پیدا نشد`);
 
