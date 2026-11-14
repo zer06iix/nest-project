@@ -12,12 +12,14 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { ResponseMessage } from '../common/decorators/response-message.decorator';
 import { Role } from '../common/enums/role.enum';
 import { TicketStatus } from './enums/ticket-status.enum';
+import { RoleGuard } from '../common/guards/role.guard';
+import { Roles } from '../common/decorators/role.decorator';
 
 type AuthenticatedRequest = Request & { user: { userId: string; role: Role } };
 
 @ApiTags('Tickets - تیکت ها')
 @ApiBearerAuth('jwt')
-@UseGuards(JwtAccessGuard)
+@UseGuards(JwtAccessGuard, RoleGuard)
 @Controller('tickets')
 export class TicketsController {
     constructor(private readonly ticketService: TicketsService) {}
@@ -30,6 +32,7 @@ export class TicketsController {
         return this.ticketService.create(dto, req.user.userId);
     }
 
+    @Roles(Role.ADMIN)
     @Get()
     @ResponseMessage('لیست تیکت ها با موفقیت دریافت شد')
     @ApiOperation({ summary: 'دریافت تیکت های کاربر یا همه تیکت ها برای مدیر' })
@@ -45,13 +48,15 @@ export class TicketsController {
         return this.ticketService.findAll(req.user.userId, req.user.role, page, Math.min(limit, 100), status);
     }
 
+    // @Roles(Role.ADMIN)
     @Get(':id')
     @ResponseMessage('تیکت با موفقیت پیدا شد')
     @ApiOperation({ summary: 'پیدا کردن یک تیکت' })
     findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
         return this.ticketService.findOne(id, req.user.userId, req.user.role);
     }
-
+    
+    @Roles(Role.ADMIN)
     @Patch(':id')
     @ResponseMessage('تیکت با موفقیت بروزرسانی شد')
     @ApiOperation({ summary: 'بروزرسانی تیکت؛ وضعیت و تخصیص برای مدیر' })
