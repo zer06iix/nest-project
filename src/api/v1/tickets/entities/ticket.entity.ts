@@ -17,7 +17,7 @@ export class Ticket {
     @Column({ nullable: false })
     category!: TicketCategory
 
-    @Column()
+    @Column({ nullable: true })
     description!: string
 
     @Column({ default: TicketStatus.OPEN })
@@ -38,7 +38,7 @@ export class Ticket {
     assignedTo?: User;
     
     @OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.ticket)
-    messages!: TicketMessage[]
+    messages!: TicketMessage[];
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
@@ -46,6 +46,6 @@ export class Ticket {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
 
-    @Column({ name: 'closed_at', nullable: true, type: 'datetime' })
-    closedAt?: Date
+    @Column({ name: 'closed_at', nullable: true })
+    closedAt?: Date;
 }
