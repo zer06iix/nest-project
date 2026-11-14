@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -18,10 +19,18 @@ export class UsersService {
             { where: { phoneNumber: createUserDto.phoneNumber } }
         );
         if (existingUser) throw new ConflictException("کاربر با این مشخصات وجود دارد")
-        
-        const newUser = this.userRepository.create(createUserDto);
+
+        if (createUserDto.password === undefined) {
+            throw new BadRequestException('گذرواژه الزامی است');
+        }
+
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+        const newUser = this.userRepository.create({
+            ...createUserDto,
+            password: hashedPassword,
+        });
         const savedUser = await this.userRepository.save(newUser);
-        
+
         return savedUser;
     }
 
