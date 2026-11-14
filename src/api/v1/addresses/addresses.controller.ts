@@ -11,6 +11,8 @@ import { Roles } from "../common/decorators/role.decorator";
 import { Role } from "../common/enums/role.enum";
 
 
+type AuthenticatedRequest = Request & { user: { userId: string; role: Role } };
+
 @ApiTags('Addresses - آدرس های کاربران')
 @Controller('addresses')
 @UseGuards(JwtAccessGuard, RoleGuard)
@@ -22,9 +24,9 @@ export class AddressesController {
     @ApiOperation({ summary: "ساخت آدرس جدید" })
     async create(
         @Body() createAddressDto: CreateAddressDto,
-        @Param('id') userId: string
+        @Req() req: AuthenticatedRequest
     ) {
-        return await this.addressesService.create(createAddressDto, userId);
+        return await this.addressesService.create(createAddressDto, req.user.userId);
     }
     
     @Get(':id')
@@ -38,9 +40,8 @@ export class AddressesController {
     @Get('user')
     @ResponseMessage('ادرس های کاربر با موفقیت دریافت شد')
     @ApiOperation({ summary: "دریافت آدرس های کاربر درخواست کننده" })
-    async findSelfAddresses(@Req() req: Request) {
-        const user = req.user as { id: string }
-        return await this.addressesService.findUserAddresses(user.id);
+    async findSelfAddresses(@Req() req: AuthenticatedRequest) {
+        return await this.addressesService.findUserAddresses(req.user.userId);
     }
     
     @Roles(Role.ADMIN)
