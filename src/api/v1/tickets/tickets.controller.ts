@@ -56,7 +56,6 @@ export class TicketsController {
         return this.ticketService.findOne(id, req.user.userId, req.user.role);
     }
     
-    @Roles(Role.ADMIN)
     @Patch(':id')
     @ResponseMessage('تیکت با موفقیت بروزرسانی شد')
     @ApiOperation({ summary: 'بروزرسانی تیکت؛ وضعیت و تخصیص برای مدیر' })
