@@ -31,6 +31,23 @@
 $ npm install
 ```
 
+## Database migrations
+
+The Categories and Attributes schema is managed by TypeORM migrations. Configure
+the PostgreSQL `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, and
+`DB_DATABASE` environment variables, then run:
+
+```bash
+npm run migration:show
+npm run migration:run
+```
+
+In production (`NODE_ENV=production`), schema synchronization is disabled and
+pending migrations run at application startup. Development keeps the existing
+schema synchronization behavior. The migration added for this phase creates
+the Categories and Attributes tables; it is not a baseline migration for the
+pre-existing Users, Addresses, or Tickets tables.
+
 ## Compile and run the project
 
 ```bash

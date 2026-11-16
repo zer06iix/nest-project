@@ -9,6 +9,8 @@ import { TicketsModule } from 'api/v1/tickets/tickets.module';
 // import { RedisModule } from './api/v1/redis/redis.module';
 import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.module';
 import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware';
+import { CategoriesModule } from './api/v1/categories/categories.module';
+import { AttributesModule } from './api/v1/attributes/attributes.module';
 
 @Module({
     imports: [
@@ -30,7 +32,9 @@ import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware'
                 database: configService.get<string>('DB_DATABASE'),
                 // autoLoadEntities: true,
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                synchronize: true,
+                migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+                migrationsRun: configService.get<string>('NODE_ENV') === 'production',
+                synchronize: configService.get<string>('NODE_ENV') !== 'production',
             }),
         }),
 
@@ -40,6 +44,8 @@ import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware'
         TicketsModule,
         // RedisModule,
         TokenBlacklistModule,
+        CategoriesModule,
+        AttributesModule,
     ],
 })
 export class AppModule {
