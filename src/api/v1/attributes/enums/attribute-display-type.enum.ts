@@ -1,0 +1,10 @@
+export enum AttributeDisplayType {
+    SELECT = 'SELECT',
+    RADIO = 'RADIO',
+    CHECKBOX = 'CHECKBOX',
+    COLOR_SWATCH = 'COLOR_SWATCH',
+    TEXT_INPUT = 'TEXT_INPUT',
+    NUMBER_INPUT = 'NUMBER_INPUT',
+    DATE_PICKER = 'DATE_PICKER',
+    TOGGLE = 'TOGGLE',
+}
