@@ -4,7 +4,6 @@ import {
     Delete,
     Get,
     Param,
-    ParseUUIDPipe,
     Patch,
     Post,
     UseGuards,
@@ -19,6 +18,7 @@ import { JwtAccessGuard } from '../../auth/guards/jwt-access.guard';
 import { RoleGuard } from '../../common/guards/role.guard';
 import { Roles } from '../../common/decorators/role.decorator';
 import { Role } from '../../common/enums/role.enum';
+import { ParseEntityIdPipe } from '../../common/pipes/parse-entity-id.pipe';
 
 @ApiTags('Attributes')
 @Controller({ path: 'attributes', version: '1' })
@@ -42,13 +42,13 @@ export class AttributesController {
 
     @Get(':id/options')
     @ApiOperation({ summary: 'List active options for an attribute' })
-    findOptions(@Param('id', ParseUUIDPipe) id: string) {
+    findOptions(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.findOptions(id);
     }
 
     @Get(':id')
     @ApiOperation({ summary: 'Get an active attribute' })
-    findOne(@Param('id', ParseUUIDPipe) id: string) {
+    findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.findOne(id);
     }
 
@@ -58,7 +58,7 @@ export class AttributesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Update an attribute (admin only)' })
     update(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: UpdateAttributeDto,
     ) {
         return this.attributesService.update(id, dto);
@@ -69,7 +69,7 @@ export class AttributesController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Deactivate an attribute (admin only)' })
-    deactivate(@Param('id', ParseUUIDPipe) id: string) {
+    deactivate(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.deactivate(id);
     }
 
@@ -79,7 +79,7 @@ export class AttributesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Create an attribute option (admin only)' })
     createOption(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateAttributeOptionDto,
     ) {
         return this.attributesService.createOption(id, dto);
@@ -91,7 +91,7 @@ export class AttributesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Update an attribute option (admin only)' })
     updateOption(
-        @Param('optionId', ParseUUIDPipe) optionId: string,
+        @Param('optionId', new ParseEntityIdPipe()) optionId: string,
         @Body() dto: UpdateAttributeOptionDto,
     ) {
         return this.attributesService.updateOption(optionId, dto);
@@ -102,7 +102,7 @@ export class AttributesController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Deactivate an attribute option (admin only)' })
-    deactivateOption(@Param('optionId', ParseUUIDPipe) optionId: string) {
+    deactivateOption(@Param('optionId', new ParseEntityIdPipe()) optionId: string) {
         return this.attributesService.deactivateOption(optionId);
     }
 }

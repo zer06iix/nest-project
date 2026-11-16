@@ -1,20 +1,17 @@
 import {
     Entity,
     Column,
-    PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity";
+import { NanoidEntity } from "../../common/entities/nanoid.entity";
 
 
 @Entity("addresses")
-export class Address {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string
-
+export class Address extends NanoidEntity {
     @Column({ nullable: false })
     province!: string
 

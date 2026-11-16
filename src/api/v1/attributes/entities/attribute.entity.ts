@@ -4,20 +4,17 @@ import {
     Entity,
     Index,
     OneToMany,
-    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { CategoryAttribute } from './category-attribute.entity';
 import { AttributeOption } from './attribute-option.entity';
 import { AttributeDataType } from '../enums/attribute-datatype.enum';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 
 @Entity('attributes')
 @Index('uq_attributes_slug', ['slug'], { unique: true })
-export class Attribute {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
+export class Attribute extends NanoidEntity {
     @Column({ nullable: false, length: 120 })
     name!: string;
 

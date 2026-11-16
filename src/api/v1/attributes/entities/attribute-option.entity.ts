@@ -5,18 +5,15 @@ import {
     Index,
     JoinColumn,
     ManyToOne,
-    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { Attribute } from './attribute.entity';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 @Entity('attribute_options')
 @Index('uq_attribute_options_attribute_value', ['attributeId', 'value'], { unique: true })
-export class AttributeOption {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
-    @Column({ name: 'attribute_id', type: 'uuid' })
+export class AttributeOption extends NanoidEntity {
+    @Column({ name: 'attribute_id', type: 'varchar', length: 36 })
     attributeId!: string;
 
     @ManyToOne(() => Attribute, (attribute) => attribute.options, { onDelete: 'RESTRICT' })

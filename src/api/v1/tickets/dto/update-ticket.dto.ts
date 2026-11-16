@@ -1,6 +1,7 @@
-import { IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsEnum, IsOptional, IsString, Matches, MaxLength } from 'class-validator';
 import { TicketStatus } from '../enums/ticket-status.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 
 export class UpdateTicketDto {
     @ApiProperty({
@@ -16,7 +17,9 @@ export class UpdateTicketDto {
         example: '3242342'
     })
     @IsOptional()
-    @IsUUID()
+    @IsString()
+    @MaxLength(36)
+    @Matches(ENTITY_ID_PATTERN)
     assignedToId?: string;
 
     @ApiProperty({

@@ -5,20 +5,17 @@ import {
     Index,
     JoinColumn,
     ManyToOne,
-    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { Attribute } from './attribute.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { AttributeDisplayType } from '../enums/attribute-display-type.enum';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 
 @Entity('category_attribute')
 @Index('uq_category_attribute_category_attribute', ['categoryId', 'attributeId'], { unique: true })
-export class CategoryAttribute {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
+export class CategoryAttribute extends NanoidEntity {
     @Column({ name: 'is_required', default: false })
     isRequired!: boolean;
     
@@ -40,14 +37,14 @@ export class CategoryAttribute {
     @Column({ name: 'sort_order', default: 0 })
     sortOrder!: number;
 
-    @Column({ name: 'category_id', type: 'uuid' })
+    @Column({ name: 'category_id', type: 'varchar', length: 36 })
     categoryId!: string;
 
     @ManyToOne(() => Category, (category) => category.categoryAttributes)
     @JoinColumn({ name: 'category_id' })
     category!: Category;
 
-    @Column({ name: 'attribute_id', type: 'uuid' })
+    @Column({ name: 'attribute_id', type: 'varchar', length: 36 })
     attributeId!: string;
 
     @ManyToOne(() => Attribute, (attribute) => attribute.categoryAttributes)

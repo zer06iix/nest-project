@@ -3,12 +3,12 @@ import {
     IsBoolean,
     IsOptional,
     IsString,
-    IsUUID,
     Matches,
     MaxLength,
     MinLength,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 
 export class CreateCategoryDto {
     @ApiProperty({ maxLength: 120 })
@@ -54,8 +54,8 @@ export class CreateCategoryDto {
     @MaxLength(320)
     seoDescription?: string | null;
 
-    @ApiPropertyOptional({ format: 'uuid', nullable: true })
+    @ApiPropertyOptional({ pattern: ENTITY_ID_PATTERN.source, nullable: true })
     @IsOptional()
-    @IsUUID()
+    @Matches(ENTITY_ID_PATTERN)
     parentId?: string | null;
 }

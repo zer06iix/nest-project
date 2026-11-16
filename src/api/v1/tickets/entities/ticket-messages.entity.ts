@@ -1,17 +1,15 @@
 import { User } from "api/v1/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
 import { Ticket } from "./ticket.entity";
+import { NanoidEntity } from "../../common/entities/nanoid.entity";
 
 
 @Entity('ticket_message')
-export class TicketMessage {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
-    @Column({ nullable: false, name: 'ticket_id' })
+export class TicketMessage extends NanoidEntity {
+    @Column({ type: 'varchar', length: 36, nullable: false, name: 'ticket_id' })
     ticketId!: string;
     
-    @Column({ nullable: false, name: 'sender_id' })
+    @Column({ type: 'varchar', length: 36, nullable: false, name: 'sender_id' })
     senderId!: string;
 
     @Column({ type: 'text', nullable: false })

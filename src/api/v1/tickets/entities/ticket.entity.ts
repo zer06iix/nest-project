@@ -1,16 +1,14 @@
 import { User } from "api/v1/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
 import { TicketMessage } from "./ticket-messages.entity";
 import { TicketStatus } from "../enums/ticket-status.enum";
 import { TicketCategory } from "../enums/ticket-category.enum";
+import { NanoidEntity } from "../../common/entities/nanoid.entity";
 
 
 
 @Entity('tickets')
-export class Ticket {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-    
+export class Ticket extends NanoidEntity {
     @Column({ nullable: false })
     subject!: string;
     
@@ -23,10 +21,10 @@ export class Ticket {
     @Column({ default: TicketStatus.OPEN })
     status!: TicketStatus
     
-    @Column({ nullable: false, name: 'user_id' })
+    @Column({ type: 'varchar', length: 36, nullable: false, name: 'user_id' })
     userId?: string;
 
-    @Column({ nullable: true, name: 'assigned_to_id' })
+    @Column({ type: 'varchar', length: 36, nullable: true, name: 'assigned_to_id' })
     assignedToId?: string;
 
     @ManyToOne(() => User, (user) => user.ticketsCreated)

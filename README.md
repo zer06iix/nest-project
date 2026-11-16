@@ -48,6 +48,11 @@ schema synchronization behavior. The migration added for this phase creates
 the Categories and Attributes tables; it is not a baseline migration for the
 pre-existing Users, Addresses, or Tickets tables.
 
+Entity IDs are generated as 8-character Nano IDs. The ID migration keeps
+existing UUID values unchanged for compatibility, so the varchar ID columns
+allow up to 36 characters for both existing UUIDs and new Nano IDs. Reverting
+the ID migration is only supported before any Nano ID records are created.
+
 ## Compile and run the project
 
 ```bash

@@ -6,17 +6,14 @@ import {
     JoinColumn,
     ManyToOne,
     OneToMany,
-    PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { CategoryAttribute } from '../../attributes/entities/category-attribute.entity';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 @Entity('categories')
 @Index('uq_categories_slug', ['slug'], { unique: true })
-export class Category {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
+export class Category extends NanoidEntity {
     @Column({ length: 120 })
     name!: string;
 
@@ -38,7 +35,7 @@ export class Category {
     @Column({ name: 'seo_description', type: 'varchar', length: 320, nullable: true })
     seoDescription!: string | null;
 
-    @Column({ name: 'parent_id', type: 'uuid', nullable: true })
+    @Column({ name: 'parent_id', type: 'varchar', length: 36, nullable: true })
     parentId!: string | null;
 
     @ManyToOne(() => Category, (category) => category.children, {

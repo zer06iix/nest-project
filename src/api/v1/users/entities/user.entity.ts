@@ -1,7 +1,6 @@
 import {
     Entity,
     Column,
-    PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
     OneToMany,
@@ -10,13 +9,11 @@ import { Address } from '../../addresses/entities/address.entity';
 import { Role } from '../../common/enums/role.enum';
 import { Ticket } from 'api/v1/tickets/entities/ticket.entity';
 import { TicketMessage } from 'api/v1/tickets/entities/ticket-messages.entity';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 
 @Entity('users')
-export class User {
-    @PrimaryGeneratedColumn('uuid')
-    id!: string;
-
+export class User extends NanoidEntity {
     @Column({ name: 'phone_number', unique: true })
     phoneNumber!: string;
 

@@ -4,7 +4,6 @@ import {
     Delete,
     Get,
     Param,
-    ParseUUIDPipe,
     Patch,
     Post,
     UseGuards,
@@ -19,6 +18,7 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 import { Roles } from '../common/decorators/role.decorator';
 import { Role } from '../common/enums/role.enum';
+import { ParseEntityIdPipe } from '../common/pipes/parse-entity-id.pipe';
 
 @ApiTags('Categories')
 @Controller({ path: 'categories', version: '1' })
@@ -58,7 +58,7 @@ export class CategoriesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Update a category (admin only)' })
     update(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: UpdateCategoryDto,
     ) {
         return this.categoriesService.update(id, dto);
@@ -69,7 +69,7 @@ export class CategoriesController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Deactivate a category (admin only)' })
-    deactivate(@Param('id', ParseUUIDPipe) id: string) {
+    deactivate(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.categoriesService.deactivate(id);
     }
 
@@ -79,7 +79,7 @@ export class CategoriesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Assign an attribute to a category (admin only)' })
     addAttribute(
-        @Param('id', ParseUUIDPipe) id: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateCategoryAttributeDto,
     ) {
         return this.categoriesService.addAttribute(id, dto);
@@ -91,8 +91,8 @@ export class CategoriesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Update a category attribute configuration (admin only)' })
     updateAttribute(
-        @Param('id', ParseUUIDPipe) id: string,
-        @Param('attributeId', ParseUUIDPipe) attributeId: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
+        @Param('attributeId', new ParseEntityIdPipe()) attributeId: string,
         @Body() dto: UpdateCategoryAttributeDto,
     ) {
         return this.categoriesService.updateAttribute(id, attributeId, dto);
@@ -104,8 +104,8 @@ export class CategoriesController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'Remove an attribute from a category (admin only)' })
     removeAttribute(
-        @Param('id', ParseUUIDPipe) id: string,
-        @Param('attributeId', ParseUUIDPipe) attributeId: string,
+        @Param('id', new ParseEntityIdPipe()) id: string,
+        @Param('attributeId', new ParseEntityIdPipe()) attributeId: string,
     ) {
         return this.categoriesService.removeAttribute(id, attributeId);
     }

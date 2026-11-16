@@ -1,10 +1,11 @@
-import { IsBoolean, IsEnum, IsInt, IsOptional, IsUUID, Min } from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsOptional, Matches, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AttributeDisplayType } from '../enums/attribute-display-type.enum';
+import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 
 export class CreateCategoryAttributeDto {
-    @ApiProperty({ format: 'uuid' })
-    @IsUUID()
+    @ApiProperty({ pattern: ENTITY_ID_PATTERN.source })
+    @Matches(ENTITY_ID_PATTERN)
     attributeId!: string;
 
     @ApiPropertyOptional()
