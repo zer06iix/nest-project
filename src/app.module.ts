@@ -11,6 +11,8 @@ import { TokenBlacklistModule } from './api/v1/auth/blacklist/token-blacklist.mo
 import { LoggerMiddleware } from './api/v1/common/middlewares/logger.middleware';
 import { CategoriesModule } from './api/v1/categories/categories.module';
 import { AttributesModule } from './api/v1/attributes/attributes.module';
+import { ProductsModule } from './api/v1/products/products.module';
+import { StoresModule } from './api/v1/stores/stores.module';
 
 @Module({
     imports: [
@@ -33,8 +35,8 @@ import { AttributesModule } from './api/v1/attributes/attributes.module';
                 // autoLoadEntities: true,
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
                 migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-                migrationsRun: configService.get<string>('NODE_ENV') === 'production',
-                synchronize: configService.get<string>('NODE_ENV') !== 'production',
+                migrationsRun: true,
+                synchronize: false,
             }),
         }),
 
@@ -46,6 +48,8 @@ import { AttributesModule } from './api/v1/attributes/attributes.module';
         TokenBlacklistModule,
         CategoriesModule,
         AttributesModule,
+        ProductsModule,
+        StoresModule,
     ],
 })
 export class AppModule {

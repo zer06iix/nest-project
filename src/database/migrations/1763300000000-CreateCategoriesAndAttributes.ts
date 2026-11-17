@@ -4,6 +4,29 @@ export class CreateCategoriesAndAttributes1763300000000 implements MigrationInte
     name = 'CreateCategoriesAndAttributes1763300000000';
 
     async up(queryRunner: QueryRunner): Promise<void> {
+        const tables = ['categories', 'attributes', 'category_attribute', 'attribute_options'];
+        const existingTables: string[] = [];
+        for (const table of tables) {
+            if (await queryRunner.hasTable(table)) existingTables.push(table);
+        }
+
+        if (existingTables.length > 0) {
+            if (existingTables.length !== tables.length) {
+                throw new Error(
+                    'Cannot safely adopt a partial Categories and Attributes schema; reconcile it before migrating',
+                );
+            }
+            await queryRunner.query(`
+                CREATE TABLE "__migration_1763300000000_adopted" (
+                    "id" smallint PRIMARY KEY CHECK ("id" = 1)
+                )
+            `);
+            await queryRunner.query(
+                'INSERT INTO "__migration_1763300000000_adopted" ("id") VALUES (1)',
+            );
+            return;
+        }
+
         await queryRunner.query(`
             CREATE TABLE "categories" (
                 "id" uuid NOT NULL,
@@ -100,6 +123,10 @@ export class CreateCategoriesAndAttributes1763300000000 implements MigrationInte
     }
 
     async down(queryRunner: QueryRunner): Promise<void> {
+        if (await queryRunner.hasTable('__migration_1763300000000_adopted')) {
+            await queryRunner.dropTable('__migration_1763300000000_adopted');
+            return;
+        }
         await queryRunner.query('DROP INDEX "IDX_attribute_options_attribute_id"');
         await queryRunner.query('DROP INDEX "IDX_category_attribute_attribute_id"');
         await queryRunner.query('DROP INDEX "IDX_categories_parent_id"');

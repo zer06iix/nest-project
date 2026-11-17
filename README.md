@@ -33,8 +33,9 @@ $ npm install
 
 ## Database migrations
 
-The Categories and Attributes schema is managed by TypeORM migrations. Configure
-the PostgreSQL `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`, and
+The Categories, Attributes, Products, and Stores schemas are managed by
+TypeORM migrations. Configure the PostgreSQL `DB_HOST`, `DB_PORT`,
+`DB_USERNAME`, `DB_PASSWORD`, and
 `DB_DATABASE` environment variables, then run:
 
 ```bash
@@ -42,16 +43,31 @@ npm run migration:show
 npm run migration:run
 ```
 
-In production (`NODE_ENV=production`), schema synchronization is disabled and
-pending migrations run at application startup. Development keeps the existing
-schema synchronization behavior. The migration added for this phase creates
-the Categories and Attributes tables; it is not a baseline migration for the
-pre-existing Users, Addresses, or Tickets tables.
+Schema synchronization is disabled and pending migrations run at application
+startup. The migration chain creates the Categories, Attributes, Products, and
+Stores tables; it is not a baseline migration for the pre-existing Users,
+Addresses, or Tickets tables.
 
 Entity IDs are generated as 8-character Nano IDs. The ID migration keeps
 existing UUID values unchanged for compatibility, so the varchar ID columns
 allow up to 36 characters for both existing UUIDs and new Nano IDs. Reverting
 the ID migration is only supported before any Nano ID records are created.
+
+Products and Stores
+-------------------
+
+The version 1 Products API provides product and brand management, variants,
+category-configured product and variant attributes, image URL management,
+identifiers, and active store listings. Store APIs provide store/listing
+management, current prices, and paginated price history. Administrative write
+operations require an administrator; public reads only expose active products,
+stores, and listings.
+
+Product image endpoints accept URLs from external media storage. This
+application does not currently upload or store image files. New Products and
+Stores entity IDs are 8-character Nano IDs; their database ID columns are
+`varchar(8)`. Existing Category and Attribute IDs retain their 36-character
+columns to support legacy UUID values.
 
 ## Compile and run the project
 
