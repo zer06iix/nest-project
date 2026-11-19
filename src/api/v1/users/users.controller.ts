@@ -22,7 +22,7 @@ import { ApiBearerAuth, ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } fro
 import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 
 
-@ApiTags('Users - مدیریت کاربران')
+@ApiTags('کاربران')
 @ApiBearerAuth('jwt')
 @Controller('users')
 @UseGuards(JwtAccessGuard, RoleGuard)

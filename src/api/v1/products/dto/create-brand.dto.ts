@@ -24,12 +24,12 @@ export class CreateBrandDto {
     @MaxLength(500)
     logo?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات برند' })
     @IsOptional()
     @IsString()
     description?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'فعال یا غیرفعال بودن برند' })
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;

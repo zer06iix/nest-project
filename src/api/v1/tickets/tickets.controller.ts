@@ -17,7 +17,7 @@ import { Roles } from '../common/decorators/role.decorator';
 
 type AuthenticatedRequest = Request & { user: { userId: string; role: Role } };
 
-@ApiTags('Tickets - تیکت ها')
+@ApiTags('تیکت‌ها')
 @ApiBearerAuth('jwt')
 @UseGuards(JwtAccessGuard, RoleGuard)
 @Controller('tickets')

@@ -37,12 +37,12 @@ export class CreateAttributeDto {
     @MaxLength(40)
     unit?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات ویژگی' })
     @IsOptional()
     @IsString()
     description?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'فعال یا غیرفعال بودن ویژگی' })
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;

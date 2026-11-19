@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsEnum, IsDateString, Max, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryPriceHistoryDto {
@@ -17,4 +17,16 @@ export class QueryPriceHistoryDto {
     @Min(1)
     @Max(100)
     limit = 20;
+
+    @IsOptional()
+    @IsDateString()
+    startDate?: string;
+
+    @IsOptional()
+    @IsDateString()
+    endDate?: string;
+
+    @IsOptional()
+    @IsEnum(['ASC', 'DESC'])
+    sort: 'ASC' | 'DESC' = 'DESC';
 }

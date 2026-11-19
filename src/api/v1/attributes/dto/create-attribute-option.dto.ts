@@ -22,7 +22,7 @@ export class CreateAttributeOptionDto {
     @IsObject()
     metadata?: Record<string, unknown> | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'فعال یا غیرفعال بودن گزینه ویژگی' })
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;

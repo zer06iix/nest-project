@@ -11,13 +11,14 @@ import { Price } from './entities/price.entity';
 import { PriceHistory } from './entities/price-history.entity';
 import { StoresController } from './stores.controller';
 import { StoresService } from './stores.service';
+import { StoreProductsController } from './store-products.controller';
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([Store, StoreProduct, Product, ProductVariant, Price, PriceHistory]),
         UsersModule,
     ],
-    controllers: [StoresController],
+    controllers: [StoresController, StoreProductsController],
     providers: [StoresService, JwtAccessGuard, RoleGuard],
     exports: [StoresService],
 })

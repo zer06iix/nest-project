@@ -27,8 +27,9 @@ import { ReorderProductImagesDto } from './dto/reorder-product-images.dto';
 import { CreateProductIdentifierDto } from './dto/create-product-identifier.dto';
 import { QueryProductIdentifiersDto } from './dto/query-product-identifiers.dto';
 import { SetAttributeValuesDto } from './dto/set-attribute-values.dto';
+import { PriceComparisonQueryDto } from '../stores/dto/price-comparison-query.dto';
 
-@ApiTags('Products')
+@ApiTags('محصولات')
 @Controller({ path: 'products', version: '1' })
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
@@ -37,13 +38,13 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Create a product draft (admin only)' })
+    @ApiOperation({ summary: 'ایجاد پیش‌نویس محصول (فقط مدیر)' })
     create(@Body() dto: CreateProductDto) {
         return this.productsService.create(dto);
     }
 
     @Get()
-    @ApiOperation({ summary: 'Search and filter active products' })
+    @ApiOperation({ summary: 'جست‌وجو و فیلتر محصولات فعال' })
     findAll(@Query() query: QueryProductsDto) {
         return this.productsService.findAll(query);
     }
@@ -52,7 +53,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Search products including drafts and archived records (admin only)' })
+    @ApiOperation({ summary: 'جست‌وجو در همه محصولات شامل پیش‌نویس و آرشیو (فقط مدیر)' })
     findAllForAdmin(@Query() query: QueryProductsDto) {
         return this.productsService.findAll(query, true);
     }
@@ -61,19 +62,19 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Get any product, including drafts and archived records (admin only)' })
+    @ApiOperation({ summary: 'دریافت هر محصول شامل پیش‌نویس و آرشیو (فقط مدیر)' })
     findAdminOne(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findAdminOne(id);
     }
 
     @Get('slug/:slug')
-    @ApiOperation({ summary: 'Get an active product by slug' })
+    @ApiOperation({ summary: 'دریافت محصول فعال بر اساس نامک' })
     findBySlug(@Param('slug') slug: string) {
         return this.productsService.findBySlug(slug);
     }
 
     @Get(':id/variants/:variantId/stores')
-    @ApiOperation({ summary: 'List active store listings for a product variant' })
+    @ApiOperation({ summary: 'دریافت لیست‌های فعال فروشگاه برای یک نوع محصول' })
     findVariantStores(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
@@ -82,13 +83,28 @@ export class ProductsController {
     }
 
     @Get(':id/stores')
-    @ApiOperation({ summary: 'List active store listings for a product' })
+    @ApiOperation({ summary: 'دریافت لیست‌های فعال فروشگاه برای یک محصول' })
     findStores(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findStoreListings(id);
     }
 
+    @Get(':id/offers')
+    @ApiOperation({ summary: 'دریافت پیشنهادهای فعال محصول به‌ترتیب کمترین قیمت' })
+    findOffers(@Param('id', new ParseEntityIdPipe()) id: string) {
+        return this.productsService.findStoreListings(id);
+    }
+
+    @Get(':id/price-comparison')
+    @ApiOperation({ summary: 'مقایسه پیشنهادهای فعال انواع محصول در فروشگاه‌ها' })
+    getPriceComparison(
+        @Param('id', new ParseEntityIdPipe()) id: string,
+        @Query() query: PriceComparisonQueryDto,
+    ) {
+        return this.productsService.getPriceComparison(id, query.sort);
+    }
+
     @Get(':id/variants/:variantId')
-    @ApiOperation({ summary: 'Get a product variant' })
+    @ApiOperation({ summary: 'دریافت نوع محصول' })
     findVariant(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
@@ -97,19 +113,19 @@ export class ProductsController {
     }
 
     @Get(':id/variants')
-    @ApiOperation({ summary: 'List active variants for a product' })
+    @ApiOperation({ summary: 'دریافت انواع فعال محصول' })
     findVariants(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findVariants(id);
     }
 
     @Get(':id/attributes')
-    @ApiOperation({ summary: 'List product attribute values' })
+    @ApiOperation({ summary: 'دریافت مقادیر ویژگی‌های محصول' })
     getAttributes(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.getProductAttributes(id);
     }
 
     @Get(':id/identifiers')
-    @ApiOperation({ summary: 'List product identifiers' })
+    @ApiOperation({ summary: 'دریافت شناسه‌های محصول' })
     findIdentifiers(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Query() query: QueryProductIdentifiersDto,
@@ -118,7 +134,7 @@ export class ProductsController {
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Get a product by ID' })
+    @ApiOperation({ summary: 'دریافت محصول بر اساس شناسه' })
     findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findOne(id);
     }
@@ -127,7 +143,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Update or publish a product (admin only)' })
+    @ApiOperation({ summary: 'به‌روزرسانی یا انتشار محصول (فقط مدیر)' })
     update(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: UpdateProductDto,
@@ -139,7 +155,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Archive and soft-delete a product (admin only)' })
+    @ApiOperation({ summary: 'آرشیو و حذف نرم محصول (فقط مدیر)' })
     remove(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.remove(id);
     }
@@ -148,7 +164,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Add a product variant (admin only)' })
+    @ApiOperation({ summary: 'افزودن نوع محصول (فقط مدیر)' })
     createVariant(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateProductVariantDto,
@@ -160,7 +176,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Update a product variant (admin only)' })
+    @ApiOperation({ summary: 'به‌روزرسانی نوع محصول (فقط مدیر)' })
     updateVariant(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
@@ -173,7 +189,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Remove a product variant (admin only)' })
+    @ApiOperation({ summary: 'حذف نوع محصول (فقط مدیر)' })
     removeVariant(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
@@ -185,7 +201,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Replace product attribute values (admin only)' })
+    @ApiOperation({ summary: 'جایگزینی مقادیر ویژگی‌های محصول (فقط مدیر)' })
     replaceAttributes(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: SetAttributeValuesDto,
@@ -197,7 +213,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Replace variant attribute values (admin only)' })
+    @ApiOperation({ summary: 'جایگزینی مقادیر ویژگی‌های نوع محصول (فقط مدیر)' })
     replaceVariantAttributes(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
@@ -210,7 +226,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Add a product image URL (admin only; upload is handled by external storage)' })
+    @ApiOperation({ summary: 'افزودن نشانی تصویر محصول (فقط مدیر؛ بارگذاری از فضای ذخیره خارجی انجام می‌شود)' })
     createImage(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateProductImageDto,
@@ -222,7 +238,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Delete a product image (admin only)' })
+    @ApiOperation({ summary: 'حذف تصویر محصول (فقط مدیر)' })
     removeImage(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('imageId', new ParseEntityIdPipe()) imageId: string,
@@ -234,7 +250,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Set a product image as primary (admin only)' })
+    @ApiOperation({ summary: 'تنظیم تصویر اصلی محصول (فقط مدیر)' })
     setPrimaryImage(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('imageId', new ParseEntityIdPipe()) imageId: string,
@@ -246,7 +262,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Reorder product images (admin only)' })
+    @ApiOperation({ summary: 'مرتب‌سازی تصاویر محصول (فقط مدیر)' })
     reorderImages(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: ReorderProductImagesDto,
@@ -258,7 +274,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Add a product identifier (admin only)' })
+    @ApiOperation({ summary: 'افزودن شناسه محصول (فقط مدیر)' })
     createIdentifier(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateProductIdentifierDto,
@@ -270,7 +286,7 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Delete a product identifier (admin only)' })
+    @ApiOperation({ summary: 'حذف شناسه محصول (فقط مدیر)' })
     removeIdentifier(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('identifierId', new ParseEntityIdPipe()) identifierId: string,

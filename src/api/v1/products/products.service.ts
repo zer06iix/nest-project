@@ -647,6 +647,48 @@ export class ProductsService {
         return listings;
     }
 
+    async getPriceComparison(productId: string, sort = 'lowestPrice') {
+        const listings = await this.findStoreListings(productId);
+        const offers = listings.map((listing) => {
+            const amount = listing.price ? Number(listing.price.amount) : null;
+            const originalAmount = listing.price?.originalAmount
+                ? Number(listing.price.originalAmount)
+                : null;
+            const discountPercentage = amount !== null && originalAmount !== null && originalAmount > 0
+                ? Math.round(((originalAmount - amount) / originalAmount) * 100)
+                : null;
+            return {
+                store: { id: listing.store.id, name: listing.store.name, logo: listing.store.logo },
+                storeProductId: listing.id,
+                productVariant: listing.productVariant,
+                currentPrice: listing.price?.amount ?? null,
+                originalPrice: listing.price?.originalAmount ?? null,
+                currency: listing.price?.currency ?? null,
+                discountPercentage,
+                availability: listing.availabilityStatus,
+                stockStatus: listing.stockStatus,
+                lastPriceUpdate: listing.price?.updatedAt ?? null,
+            };
+        });
+        offers.sort((a, b) => {
+            if (a.currentPrice === null) return 1;
+            if (b.currentPrice === null) return -1;
+            return sort === 'highestPrice'
+                ? Number(b.currentPrice) - Number(a.currentPrice)
+                : Number(a.currentPrice) - Number(b.currentPrice);
+        });
+        const variants = new Map<string, typeof offers>();
+        for (const offer of offers) {
+            const variantId = offer.productVariant.id;
+            if (!variants.has(variantId)) variants.set(variantId, []);
+            variants.get(variantId)?.push(offer);
+        }
+        return { variants: Array.from(variants.entries()).map(([variantId, items]) => ({
+            variantId,
+            offers: items,
+        })) };
+    }
+
     private async buildAttributeValues<T extends ProductAttributeValue | VariantAttributeValue>(
         categoryId: string,
         inputs: AttributeValueDto[],

@@ -20,7 +20,7 @@ import { Roles } from '../../common/decorators/role.decorator';
 import { Role } from '../../common/enums/role.enum';
 import { ParseEntityIdPipe } from '../../common/pipes/parse-entity-id.pipe';
 
-@ApiTags('Attributes')
+@ApiTags('ویژگی‌ها')
 @Controller({ path: 'attributes', version: '1' })
 export class AttributesController {
     constructor(private readonly attributesService: AttributesService) {}
@@ -29,25 +29,25 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Create an attribute (admin only)' })
+    @ApiOperation({ summary: 'ایجاد ویژگی (فقط مدیر)' })
     create(@Body() dto: CreateAttributeDto) {
         return this.attributesService.create(dto);
     }
 
     @Get()
-    @ApiOperation({ summary: 'List active attributes' })
+    @ApiOperation({ summary: 'دریافت ویژگی‌های فعال' })
     findAll() {
         return this.attributesService.findAll();
     }
 
     @Get(':id/options')
-    @ApiOperation({ summary: 'List active options for an attribute' })
+    @ApiOperation({ summary: 'دریافت گزینه‌های فعال ویژگی' })
     findOptions(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.findOptions(id);
     }
 
     @Get(':id')
-    @ApiOperation({ summary: 'Get an active attribute' })
+    @ApiOperation({ summary: 'دریافت ویژگی فعال' })
     findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.findOne(id);
     }
@@ -56,7 +56,7 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Update an attribute (admin only)' })
+    @ApiOperation({ summary: 'به‌روزرسانی ویژگی (فقط مدیر)' })
     update(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: UpdateAttributeDto,
@@ -68,7 +68,7 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Deactivate an attribute (admin only)' })
+    @ApiOperation({ summary: 'غیرفعال‌سازی ویژگی (فقط مدیر)' })
     deactivate(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.attributesService.deactivate(id);
     }
@@ -77,7 +77,7 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Create an attribute option (admin only)' })
+    @ApiOperation({ summary: 'ایجاد گزینه برای ویژگی (فقط مدیر)' })
     createOption(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateAttributeOptionDto,
@@ -89,7 +89,7 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Update an attribute option (admin only)' })
+    @ApiOperation({ summary: 'به‌روزرسانی گزینه ویژگی (فقط مدیر)' })
     updateOption(
         @Param('optionId', new ParseEntityIdPipe()) optionId: string,
         @Body() dto: UpdateAttributeOptionDto,
@@ -101,7 +101,7 @@ export class AttributesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'Deactivate an attribute option (admin only)' })
+    @ApiOperation({ summary: 'غیرفعال‌سازی گزینه ویژگی (فقط مدیر)' })
     deactivateOption(@Param('optionId', new ParseEntityIdPipe()) optionId: string) {
         return this.attributesService.deactivateOption(optionId);
     }

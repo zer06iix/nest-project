@@ -26,7 +26,7 @@ export class CreateCategoryDto {
     @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     slug!: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات دسته‌بندی' })
     @IsOptional()
     @IsString()
     description?: string | null;
@@ -37,7 +37,7 @@ export class CreateCategoryDto {
     @MaxLength(2048)
     imageUrl?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'فعال یا غیرفعال بودن دسته‌بندی' })
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;

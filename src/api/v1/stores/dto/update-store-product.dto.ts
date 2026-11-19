@@ -1,7 +1,9 @@
-import { IsBoolean, IsEnum, IsOptional, IsString, IsUrl, MaxLength } from 'class-validator';
+import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, IsUrl, MaxLength, Min } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { AvailabilityStatus } from '../enums/availability-status.enum';
 import { StockStatus } from '../enums/stock-status.enum';
+import { StoreProductStatus } from '../enums/store-product-status.enum';
 
 export class UpdateStoreProductDto {
     @ApiPropertyOptional({ maxLength: 2048 })
@@ -22,7 +24,7 @@ export class UpdateStoreProductDto {
     @MaxLength(255)
     title?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات اختصاصی فروشگاه برای محصول' })
     @IsOptional()
     @IsString()
     description?: string | null;
@@ -37,8 +39,20 @@ export class UpdateStoreProductDto {
     @IsEnum(StockStatus)
     stockStatus?: StockStatus;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'فعال یا غیرفعال بودن لیست فروشگاه' })
     @IsOptional()
     @IsBoolean()
     isActive?: boolean;
+
+    @ApiPropertyOptional({ minimum: 0 })
+    @IsOptional()
+    @Transform(({ value }) => value === null ? value : Number(value))
+    @IsInt()
+    @Min(0)
+    stockQuantity?: number | null;
+
+    @ApiPropertyOptional({ enum: StoreProductStatus })
+    @IsOptional()
+    @IsEnum(StoreProductStatus)
+    status?: StoreProductStatus;
 }

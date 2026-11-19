@@ -28,7 +28,7 @@ export class QueryProductsDto {
     @Max(100)
     limit = 20;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'عبارت جست‌وجو در نام محصول' })
     @IsOptional()
     @IsString()
     @MaxLength(255)
@@ -89,7 +89,7 @@ export class QueryProductsDto {
     @Matches(ENTITY_ID_PATTERN)
     attributeId?: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'مقدار ویژگی برای فیلتر محصولات' })
     @IsOptional()
     @IsString()
     attributeValue?: string;

@@ -13,7 +13,7 @@ import { Role } from "../common/enums/role.enum";
 
 type AuthenticatedRequest = Request & { user: { userId: string; role: Role } };
 
-@ApiTags('Addresses - آدرس های کاربران')
+@ApiTags('آدرس‌های کاربران')
 @Controller('addresses')
 @UseGuards(JwtAccessGuard, RoleGuard)
 export class AddressesController {

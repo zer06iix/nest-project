@@ -12,7 +12,7 @@ import { JwtRefreshGuard } from "./guards/jwt-refresh.guard";
 import { GetToken } from "./decorators/get-token.decorator";
 
 
-@ApiTags('Auth - احراز هویت')
+@ApiTags('احراز هویت')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}

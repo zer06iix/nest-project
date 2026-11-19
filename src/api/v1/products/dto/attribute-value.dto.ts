@@ -24,7 +24,7 @@ export class AttributeValueDto {
     @Matches(ENTITY_ID_PATTERN)
     optionId?: string | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'مقدار متنی ویژگی' })
     @IsOptional()
     @IsString()
     @MaxLength(10000)
@@ -36,7 +36,7 @@ export class AttributeValueDto {
     @IsNumber({ allowNaN: false, allowInfinity: false })
     valueNumber?: number | null;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'مقدار بولی ویژگی' })
     @IsOptional()
     @IsBoolean()
     valueBoolean?: boolean | null;

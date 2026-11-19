@@ -30,7 +30,7 @@ export class CreateProductDto {
     @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     slug!: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات محصول' })
     @IsOptional()
     @IsString()
     description?: string | null;

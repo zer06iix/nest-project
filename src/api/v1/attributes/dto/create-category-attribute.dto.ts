@@ -8,27 +8,27 @@ export class CreateCategoryAttributeDto {
     @Matches(ENTITY_ID_PATTERN)
     attributeId!: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'آیا مقدار این ویژگی الزامی است؟' })
     @IsOptional()
     @IsBoolean()
     isRequired?: boolean;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'آیا این ویژگی قابل فیلتر کردن است؟' })
     @IsOptional()
     @IsBoolean()
     isFilterable?: boolean;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'آیا این ویژگی روی کارت نمایش داده می‌شود؟' })
     @IsOptional()
     @IsBoolean()
     isVisibleOnCard?: boolean;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'آیا این ویژگی در صفحه محصول نمایش داده می‌شود؟' })
     @IsOptional()
     @IsBoolean()
     isVisibleOnProduct?: boolean;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'آیا این ویژگی مخصوص نوع محصول است؟' })
     @IsOptional()
     @IsBoolean()
     isVariantAttribute?: boolean;

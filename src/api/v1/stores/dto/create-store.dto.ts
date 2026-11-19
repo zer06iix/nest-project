@@ -19,7 +19,7 @@ export class CreateStoreDto {
     @Matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
     slug!: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'توضیحات فروشگاه' })
     @IsOptional()
     @IsString()
     description?: string | null;

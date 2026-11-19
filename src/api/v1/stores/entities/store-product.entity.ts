@@ -1,4 +1,5 @@
 import {
+    Check,
     Column,
     CreateDateColumn,
     Entity,
@@ -8,6 +9,7 @@ import {
     OneToOne,
     OneToMany,
     UpdateDateColumn,
+    DeleteDateColumn,
 } from 'typeorm';
 import { Nanoid8Entity } from '../../common/entities/nanoid-8.entity';
 import { Store } from './store.entity';
@@ -16,8 +18,15 @@ import { AvailabilityStatus } from '../enums/availability-status.enum';
 import { StockStatus } from '../enums/stock-status.enum';
 import { Price } from './price.entity';
 import { PriceHistory } from './price-history.entity';
+import { StoreProductStatus } from '../enums/store-product-status.enum';
 
 @Entity('store_products')
+@Check('CHK_store_products_stock_quantity', '"stock_quantity" IS NULL OR "stock_quantity" >= 0')
+@Check(
+    'CHK_store_products_stock_consistency',
+    `("stock_status" != 'OUT_OF_STOCK' OR "stock_quantity" IS NULL OR "stock_quantity" = 0)
+     AND ("stock_status" != 'IN_STOCK' OR "stock_quantity" IS NULL OR "stock_quantity" > 0)`,
+)
 @Index('uq_store_products_store_variant', ['storeId', 'productVariantId'], { unique: true })
 @Index('uq_store_products_external_id', ['storeId', 'externalProductId'], {
     unique: true,
@@ -42,8 +51,8 @@ export class StoreProduct extends Nanoid8Entity {
     @Column({ name: 'external_product_id', type: 'varchar', length: 255, nullable: true })
     externalProductId!: string | null;
 
-    @Column({ name: 'external_url', type: 'varchar', length: 2048 })
-    externalUrl!: string;
+    @Column({ name: 'external_url', type: 'varchar', length: 2048, nullable: true })
+    externalUrl!: string | null;
 
     @Column({ type: 'varchar', length: 255, nullable: true })
     title!: string | null;
@@ -62,6 +71,12 @@ export class StoreProduct extends Nanoid8Entity {
     @Column({ name: 'stock_status', type: 'varchar', length: 16, default: StockStatus.UNKNOWN })
     stockStatus!: StockStatus;
 
+    @Column({ name: 'stock_quantity', type: 'integer', nullable: true })
+    stockQuantity!: number | null;
+
+    @Column({ name: 'status', type: 'varchar', length: 16, default: StoreProductStatus.ACTIVE })
+    status!: StoreProductStatus;
+
     @Column({ name: 'last_checked_at', type: 'timestamptz', nullable: true })
     lastCheckedAt!: Date | null;
 
@@ -79,4 +94,7 @@ export class StoreProduct extends Nanoid8Entity {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
+
+    @DeleteDateColumn({ name: 'deleted_at', nullable: true })
+    deletedAt!: Date | null;
 }

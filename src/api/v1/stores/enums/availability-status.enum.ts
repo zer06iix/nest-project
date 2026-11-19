@@ -1,5 +1,6 @@
 export enum AvailabilityStatus {
     AVAILABLE = 'AVAILABLE',
-    UNAVAILABLE = 'UNAVAILABLE',
+    OUT_OF_STOCK = 'OUT_OF_STOCK',
+    PRE_ORDER = 'PRE_ORDER',
     DISCONTINUED = 'DISCONTINUED',
 }

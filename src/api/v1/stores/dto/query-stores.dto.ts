@@ -19,7 +19,7 @@ export class QueryStoresDto {
     @Max(100)
     limit = 20;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({ description: 'عبارت جست‌وجو در نام فروشگاه' })
     @IsOptional()
     @IsString()
     @MaxLength(255)
