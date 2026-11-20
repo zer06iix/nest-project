@@ -11,7 +11,6 @@ import { Ticket } from 'api/v1/tickets/entities/ticket.entity';
 import { TicketMessage } from 'api/v1/tickets/entities/ticket-messages.entity';
 import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
-
 @Entity('users')
 export class User extends NanoidEntity {
     @Column({ name: 'phone_number', unique: true })
@@ -26,10 +25,10 @@ export class User extends NanoidEntity {
         default: Role.USER,
     })
     role!: Role;
-    
+
     @Column({ nullable: true })
     password!: string;
-    
+
     @OneToMany(() => Address, (address) => address.user)
     addresses!: Address[];
 
@@ -42,9 +41,9 @@ export class User extends NanoidEntity {
     @OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.sender)
     ticketMessages!: TicketMessage[];
 
-    @Column({ type: "varchar", name: 'hashed_refresh_token', nullable: true })
+    @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
     hashedRefreshToken!: string | null;
-    
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
 

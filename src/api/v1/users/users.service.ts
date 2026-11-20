@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    ConflictException,
+    BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
@@ -6,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Role } from '../common/enums/role.enum';
+import { normalizeIranPhoneNumber } from '../common/utils/phone';
 
 @Injectable()
 export class UsersService {
@@ -14,11 +20,20 @@ export class UsersService {
         private readonly userRepository: Repository<User>,
     ) {}
 
+    private normalizePhone(phone: string): string {
+        const normalized = normalizeIranPhoneNumber(phone);
+        if (!normalized)
+            throw new BadRequestException('شماره موبایل معتبر نیست');
+        return normalized;
+    }
+
     async create(createUserDto: CreateUserDto) {
-        const existingUser = await this.userRepository.findOne(
-            { where: { phoneNumber: createUserDto.phoneNumber } }
-        );
-        if (existingUser) throw new ConflictException("کاربر با این مشخصات وجود دارد")
+        const normalizedPhone = this.normalizePhone(createUserDto.phoneNumber);
+        const existingUser = await this.userRepository.findOne({
+            where: { phoneNumber: normalizedPhone },
+        });
+        if (existingUser)
+            throw new ConflictException('کاربر با این مشخصات وجود دارد');
 
         if (createUserDto.password === undefined) {
             throw new BadRequestException('گذرواژه الزامی است');
@@ -27,6 +42,7 @@ export class UsersService {
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
         const newUser = this.userRepository.create({
             ...createUserDto,
+            phoneNumber: normalizedPhone,
             password: hashedPassword,
         });
         const savedUser = await this.userRepository.save(newUser);
@@ -34,11 +50,7 @@ export class UsersService {
         return savedUser;
     }
 
-    async findAll(
-        role?: Role,
-        limit: number = 20,
-        page: number = 1
-    ) {
+    async findAll(role?: Role, limit: number = 20, page: number = 1) {
         const query = this.userRepository.createQueryBuilder('users');
         if (role) {
             query.where('users.role = :role', { role });
@@ -50,7 +62,7 @@ export class UsersService {
     }
 
     async findOneById(id: string) {
-        const user = await this.userRepository.findOneByOrFail({ id })
+        const user = await this.userRepository.findOneByOrFail({ id });
 
         if (!user) throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
 
@@ -58,9 +70,15 @@ export class UsersService {
     }
 
     async findOneByPhone(phoneNumber: string) {
-        const user = await this.userRepository.findOneBy({ phoneNumber })
+        const normalizedPhone = this.normalizePhone(phoneNumber);
+        const user = await this.userRepository.findOneBy({
+            phoneNumber: normalizedPhone,
+        });
 
-        if (!user) throw new NotFoundException(`کاربر با شماره تماس ${phoneNumber} پیدا نشد`);
+        if (!user)
+            throw new NotFoundException(
+                `کاربر با شماره تماس ${phoneNumber} پیدا نشد`,
+            );
 
         return user;
     }
@@ -68,23 +86,27 @@ export class UsersService {
     async update(id: string, updateUserDto: UpdateUserDto) {
         await this.userRepository.update(id, {
             displayName: updateUserDto.displayName,
-            role: updateUserDto.role
+            role: updateUserDto.role,
         });
         const user = await this.findOneById(id);
-        
+
         return user;
     }
 
-    async updateHashedRefreshToken(id: string, hashedRefreshToken: string | null) {
-        if (hashedRefreshToken === undefined) throw new NotFoundException('توکنی پیدا نشد');
+    async updateHashedRefreshToken(
+        id: string,
+        hashedRefreshToken: string | null,
+    ) {
+        if (hashedRefreshToken === undefined)
+            throw new NotFoundException('توکنی پیدا نشد');
 
         await this.userRepository.update(id, { hashedRefreshToken });
     }
 
     async remove(id: string) {
         const result = await this.userRepository.delete({ id });
-        
-        if (result.affected === 0) 
+
+        if (result.affected === 0)
             throw new NotFoundException(`کاربر با آیدی ${id} پیدا نشد`);
     }
 }
