@@ -53,7 +53,9 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'جست‌وجو در همه محصولات شامل پیش‌نویس و آرشیو (فقط مدیر)' })
+    @ApiOperation({
+        summary: 'جست‌وجو در همه محصولات شامل پیش‌نویس و آرشیو (فقط مدیر)',
+    })
     findAllForAdmin(@Query() query: QueryProductsDto) {
         return this.productsService.findAll(query, true);
     }
@@ -62,7 +64,9 @@ export class ProductsController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'دریافت هر محصول شامل پیش‌نویس و آرشیو (فقط مدیر)' })
+    @ApiOperation({
+        summary: 'دریافت هر محصول شامل پیش‌نویس و آرشیو (فقط مدیر)',
+    })
     findAdminOne(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findAdminOne(id);
     }
@@ -89,13 +93,17 @@ export class ProductsController {
     }
 
     @Get(':id/offers')
-    @ApiOperation({ summary: 'دریافت پیشنهادهای فعال محصول به‌ترتیب کمترین قیمت' })
+    @ApiOperation({
+        summary: 'دریافت پیشنهادهای فعال محصول به‌ترتیب کمترین قیمت',
+    })
     findOffers(@Param('id', new ParseEntityIdPipe()) id: string) {
         return this.productsService.findStoreListings(id);
     }
 
     @Get(':id/price-comparison')
-    @ApiOperation({ summary: 'مقایسه پیشنهادهای فعال انواع محصول در فروشگاه‌ها' })
+    @ApiOperation({
+        summary: 'مقایسه پیشنهادهای فعال انواع محصول در فروشگاه‌ها',
+    })
     getPriceComparison(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Query() query: PriceComparisonQueryDto,
@@ -219,14 +227,21 @@ export class ProductsController {
         @Param('variantId', new ParseEntityIdPipe()) variantId: string,
         @Body() dto: SetAttributeValuesDto,
     ) {
-        return this.productsService.replaceVariantAttributes(id, variantId, dto.values);
+        return this.productsService.replaceVariantAttributes(
+            id,
+            variantId,
+            dto.values,
+        );
     }
 
     @Post(':id/images')
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'افزودن نشانی تصویر محصول (فقط مدیر؛ بارگذاری از فضای ذخیره خارجی انجام می‌شود)' })
+    @ApiOperation({
+        summary:
+            'افزودن نشانی تصویر محصول (فقط مدیر؛ بارگذاری از فضای ذخیره خارجی انجام می‌شود)',
+    })
     createImage(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateProductImageDto,

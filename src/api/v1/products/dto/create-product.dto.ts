@@ -16,14 +16,18 @@ import { AttributeValueDto } from './attribute-value.dto';
 
 export class CreateProductDto {
     @ApiProperty({ maxLength: 255 })
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @Transform(({ value }: { value: unknown }) =>
+        typeof value === 'string' ? value.trim() : value,
+    )
     @IsString()
     @MinLength(1)
     @MaxLength(255)
     name!: string;
 
     @ApiProperty({ maxLength: 255, example: 'smartphone-x' })
-    @Transform(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value)
+    @Transform(({ value }: { value: unknown }) =>
+        typeof value === 'string' ? value.trim().toLowerCase() : value,
+    )
     @IsString()
     @MinLength(1)
     @MaxLength(255)

@@ -1,4 +1,11 @@
-import { Column, CreateDateColumn, Entity, Index, OneToMany, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    Index,
+    OneToMany,
+    UpdateDateColumn,
+} from 'typeorm';
 import { Nanoid8Entity } from '../../common/entities/nanoid-8.entity';
 import { Product } from './product.entity';
 

@@ -9,7 +9,9 @@ export class CreateProductIdentifierDto {
     type!: ProductIdentifierType;
 
     @ApiProperty({ maxLength: 100 })
-    @Transform(({ value }) => typeof value === 'string' ? value.trim().toUpperCase() : value)
+    @Transform(({ value }: { value: unknown }) =>
+        typeof value === 'string' ? value.trim().toUpperCase() : value,
+    )
     @IsString()
     @MinLength(1)
     @MaxLength(100)

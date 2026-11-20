@@ -42,7 +42,10 @@ export class Product extends Nanoid8Entity {
     @Column({ name: 'brand_id', type: 'varchar', length: 8, nullable: true })
     brandId!: string | null;
 
-    @ManyToOne(() => Brand, (brand) => brand.products, { nullable: true, onDelete: 'SET NULL' })
+    @ManyToOne(() => Brand, (brand) => brand.products, {
+        nullable: true,
+        onDelete: 'SET NULL',
+    })
     @JoinColumn({ name: 'brand_id' })
     brand!: Brand | null;
 

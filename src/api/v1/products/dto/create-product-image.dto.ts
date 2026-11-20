@@ -1,4 +1,12 @@
-import { IsBoolean, IsInt, IsOptional, IsString, IsUrl, MaxLength, Min } from 'class-validator';
+import {
+    IsBoolean,
+    IsInt,
+    IsOptional,
+    IsString,
+    IsUrl,
+    MaxLength,
+    Min,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateProductImageDto {

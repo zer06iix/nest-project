@@ -1,5 +1,14 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsInt, IsOptional, IsString, MaxLength, Min, ValidateNested } from 'class-validator';
+import {
+    IsArray,
+    IsBoolean,
+    IsInt,
+    IsOptional,
+    IsString,
+    MaxLength,
+    Min,
+    ValidateNested,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AttributeValueDto } from './attribute-value.dto';
 

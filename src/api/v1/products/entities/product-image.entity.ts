@@ -10,13 +10,18 @@ import { Nanoid8Entity } from '../../common/entities/nanoid-8.entity';
 import { Product } from './product.entity';
 
 @Entity('product_images')
-@Index('uq_product_images_primary', ['productId'], { unique: true, where: '"is_primary" = true' })
+@Index('uq_product_images_primary', ['productId'], {
+    unique: true,
+    where: '"is_primary" = true',
+})
 @Index('IDX_product_images_order', ['productId', 'sortOrder'])
 export class ProductImage extends Nanoid8Entity {
     @Column({ name: 'product_id', type: 'varchar', length: 8 })
     productId!: string;
 
-    @ManyToOne(() => Product, (product) => product.images, { onDelete: 'CASCADE' })
+    @ManyToOne(() => Product, (product) => product.images, {
+        onDelete: 'CASCADE',
+    })
     @JoinColumn({ name: 'product_id' })
     product!: Product;
 

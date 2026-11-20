@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueryFailedError, Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
@@ -13,8 +17,8 @@ export class BrandsService {
     ) {}
 
     async create(dto: CreateBrandDto) {
-        return this.saveWithConflict(
-            () => this.brandRepository.save(this.brandRepository.create(dto)),
+        return this.saveWithConflict(() =>
+            this.brandRepository.save(this.brandRepository.create(dto)),
         );
     }
 
@@ -26,7 +30,10 @@ export class BrandsService {
     }
 
     async findOne(id: string) {
-        const brand = await this.brandRepository.findOneBy({ id, isActive: true });
+        const brand = await this.brandRepository.findOneBy({
+            id,
+            isActive: true,
+        });
         if (!brand) throw new NotFoundException('Brand not found');
         return brand;
     }
@@ -50,8 +57,17 @@ export class BrandsService {
         try {
             return await save();
         } catch (error) {
-            if (error instanceof QueryFailedError && error.driverError.code === '23505') {
-                throw new ConflictException('A brand with this slug already exists');
+            if (
+                error instanceof QueryFailedError &&
+                error.driverError &&
+                typeof error.driverError === 'object' &&
+                error.driverError !== null &&
+                'code' in error.driverError &&
+                (error.driverError as { code?: unknown }).code === '23505'
+            ) {
+                throw new ConflictException(
+                    'A brand with this slug already exists',
+                );
             }
             throw error;
         }

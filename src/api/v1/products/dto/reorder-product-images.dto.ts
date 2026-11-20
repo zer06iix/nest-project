@@ -1,5 +1,12 @@
 import { Type } from 'class-transformer';
-import { IsArray, IsInt, IsString, Matches, Min, ValidateNested } from 'class-validator';
+import {
+    IsArray,
+    IsInt,
+    IsString,
+    Matches,
+    Min,
+    ValidateNested,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 

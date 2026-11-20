@@ -32,7 +32,9 @@ export class AttributeValueDto {
 
     @ApiPropertyOptional({ example: 6.7 })
     @IsOptional()
-    @Transform(({ value }) => value === '' || value === null ? value : Number(value))
+    @Transform(({ value }: { value: unknown }) =>
+        value === '' || value === null ? value : Number(value),
+    )
     @IsNumber({ allowNaN: false, allowInfinity: false })
     valueNumber?: number | null;
 
