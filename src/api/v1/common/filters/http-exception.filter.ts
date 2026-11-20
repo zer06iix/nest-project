@@ -9,52 +9,83 @@ import {
     NotFoundException,
     ForbiddenException,
     ConflictException,
-} from "@nestjs/common";
+} from '@nestjs/common';
 // import { SentryExceptionCaptured } from '@sentry/nestjs';
-import { Request, Response } from "express";
-import { QueryFailedError } from "typeorm";
+import { Request, Response } from 'express';
+import { QueryFailedError } from 'typeorm';
 
+interface ErrorResponse {
+    status: number;
+    message: string | string[];
+}
 
-type Handler = (exception: any) => { status: number, message: string | string[]};
+type Handler = (exception: unknown) => ErrorResponse;
+
+type ExceptionConstructor = new (...args: unknown[]) => Error;
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-    private readonly handlers = new Map<Function, Handler>([
-        [ConflictException, (exception: ConflictException) => ({
-            status: HttpStatus.CONFLICT,
-            message: exception.message,
-        })],
-        [UnauthorizedException, (exception: UnauthorizedException) => ({
-            status: HttpStatus.UNAUTHORIZED,
-            message: exception.message === "Unauthorized" 
-                ? "لطفا وارد حساب خود شوید" 
-                : exception.message,
-        })],
-        [ForbiddenException, (exception: ForbiddenException) => ({
-            status: HttpStatus.FORBIDDEN,
-            message: exception.message,
-        })],
-        [NotFoundException, (exception: NotFoundException) => ({
-            status: HttpStatus.NOT_FOUND,
-            message: exception.message,
-        })],
-        [BadRequestException, exception => this.handleBadRequest(exception)],
-        [QueryFailedError, exception => this.handleDatabaseError(exception)],
+    private readonly handlers: Map<ExceptionConstructor, Handler> = new Map<
+        ExceptionConstructor,
+        Handler
+    >([
+        [
+            ConflictException,
+            (exception: ConflictException): ErrorResponse => ({
+                status: HttpStatus.CONFLICT,
+                message: exception.message,
+            }),
+        ],
+        [
+            UnauthorizedException,
+            (exception: UnauthorizedException): ErrorResponse => ({
+                status: HttpStatus.UNAUTHORIZED,
+                message:
+                    exception.message === 'Unauthorized'
+                        ? 'لطفا وارد حساب خود شوید'
+                        : exception.message,
+            }),
+        ],
+        [
+            ForbiddenException,
+            (exception: ForbiddenException): ErrorResponse => ({
+                status: HttpStatus.FORBIDDEN,
+                message: exception.message,
+            }),
+        ],
+        [
+            NotFoundException,
+            (exception: NotFoundException): ErrorResponse => ({
+                status: HttpStatus.NOT_FOUND,
+                message: exception.message,
+            }),
+        ],
+        [
+            BadRequestException,
+            (exception: BadRequestException): ErrorResponse =>
+                this.handleBadRequest(exception),
+        ],
+        [
+            QueryFailedError,
+            (exception: QueryFailedError): ErrorResponse =>
+                this.handleDatabaseError(exception),
+        ],
     ]);
-    
-    // @SentryExceptionCaptured() 
+
+    // @SentryExceptionCaptured()
     catch(exception: unknown, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
-        const request = ctx.getRequest<Request>()
+        const request = ctx.getRequest<Request>();
         const response = ctx.getResponse<Response>();
-        
+
         const handler = this.findHandler(exception);
         const { status, message } = handler
-        ? handler(exception)
-        : this.defaultError(exception)
+            ? handler(exception)
+            : this.defaultError(exception);
 
-        // const stack = exception instanceof Error
-        // ? console.log(exception.stack) : undefined;
+        if (exception instanceof Error) {
+            console.log(exception.stack);
+        }
 
         response.status(status).json({
             success: false,
@@ -62,33 +93,43 @@ export class AllExceptionsFilter implements ExceptionFilter {
             message,
             data: null,
             timestamp: new Date().toISOString(),
-            path: request.url
-        })
+            path: request.url,
+        });
     }
 
-    private findHandler(exception: any): Handler | undefined {
+    private findHandler(exception: unknown): Handler | undefined {
         for (const [type, handler] of this.handlers) {
-            if (exception instanceof (type as any)) return handler;
+            if (exception instanceof type) return handler;
         }
         return undefined;
     }
 
-    private defaultError(exception: any) {
+    private defaultError(exception: unknown) {
         if (exception instanceof HttpException)
-            return { status: exception.getStatus(), message: exception.message }
-        return { status: 500, message: "خطای داخلی سرور رخ داده است" };
+            return {
+                status: exception.getStatus(),
+                message: exception.message,
+            };
+        return { status: 500, message: 'خطای داخلی سرور رخ داده است' };
     }
 
     private handleBadRequest(exception: BadRequestException) {
-        const response = exception.getResponse() as any;
+        const response = exception.getResponse() as
+            string | { message?: string | string[] };
         return {
             status: 400,
-            message: Array.isArray(response?.message) ? response.message : response?.message ?? "درخواست شما نامعتبر است"
-        }
+            message:
+                typeof response === 'object' && response !== null
+                    ? Array.isArray(response.message)
+                        ? response.message
+                        : (response.message ?? 'درخواست شما نامعتبر است')
+                    : 'درخواست شما نامعتبر است',
+        };
     }
 
     private handleDatabaseError(exception: QueryFailedError) {
-        const driverError = (exception as any).driverError;
+        const driverError = exception.driverError as
+            { code?: string } | undefined;
 
         switch (driverError?.code) {
             case '23505': // Postgres unique_violation
@@ -111,6 +152,6 @@ export class AllExceptionsFilter implements ExceptionFilter {
                     status: HttpStatus.INTERNAL_SERVER_ERROR,
                     message: 'خطا در ارتباط با پایگاه داده',
                 };
-    }
+        }
     }
 }

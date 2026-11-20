@@ -1,9 +1,8 @@
-import { Logger, Provider } from "@nestjs/common";
-import { Redis } from "ioredis";
-import { REDIS_CLIENT } from "./redis.constants";
+import { Logger, Provider } from '@nestjs/common';
+import { Redis } from 'ioredis';
+import { REDIS_CLIENT } from './redis.constants';
 
-
-const logger = new Logger('RedisProvider')
+const logger = new Logger('RedisProvider');
 
 export const RedisProvider: Provider = {
     provide: REDIS_CLIENT,
@@ -16,7 +15,9 @@ export const RedisProvider: Provider = {
         });
 
         client.on('connect', () => logger.log('Redis connected'));
-        client.on('error', (err) => logger.error('Redis connection error', err));
+        client.on('error', (err) =>
+            logger.error('Redis connection error', err),
+        );
 
         return client;
     },
