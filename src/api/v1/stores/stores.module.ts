@@ -15,7 +15,14 @@ import { StoreProductsController } from './store-products.controller';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Store, StoreProduct, Product, ProductVariant, Price, PriceHistory]),
+        TypeOrmModule.forFeature([
+            Store,
+            StoreProduct,
+            Product,
+            ProductVariant,
+            Price,
+            PriceHistory,
+        ]),
         UsersModule,
     ],
     controllers: [StoresController, StoreProductsController],

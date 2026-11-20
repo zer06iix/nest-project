@@ -1,5 +1,14 @@
 import { Transform } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, Matches, Max, MaxLength, Min } from 'class-validator';
+import {
+    IsEnum,
+    IsInt,
+    IsOptional,
+    IsString,
+    Matches,
+    Max,
+    MaxLength,
+    Min,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 import { AvailabilityStatus } from '../enums/availability-status.enum';
@@ -22,7 +31,9 @@ export class QueryStoreProductsDto {
     @Max(100)
     limit = 20;
 
-    @ApiPropertyOptional({ description: 'عبارت جست‌وجو در عنوان، توضیح یا نام محصول' })
+    @ApiPropertyOptional({
+        description: 'عبارت جست‌وجو در عنوان، توضیح یا نام محصول',
+    })
     @IsOptional()
     @IsString()
     @MaxLength(255)

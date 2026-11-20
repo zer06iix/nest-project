@@ -7,7 +7,10 @@ export enum PriceComparisonSort {
 }
 
 export class PriceComparisonQueryDto {
-    @ApiPropertyOptional({ enum: PriceComparisonSort, default: PriceComparisonSort.LOWEST_PRICE })
+    @ApiPropertyOptional({
+        enum: PriceComparisonSort,
+        default: PriceComparisonSort.LOWEST_PRICE,
+    })
     @IsOptional()
     @IsEnum(PriceComparisonSort)
     sort: PriceComparisonSort = PriceComparisonSort.LOWEST_PRICE;

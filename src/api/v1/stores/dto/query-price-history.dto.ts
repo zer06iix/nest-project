@@ -1,5 +1,12 @@
 import { Transform } from 'class-transformer';
-import { IsInt, IsOptional, IsEnum, IsDateString, Max, Min } from 'class-validator';
+import {
+    IsInt,
+    IsOptional,
+    IsEnum,
+    IsDateString,
+    Max,
+    Min,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 export class QueryPriceHistoryDto {

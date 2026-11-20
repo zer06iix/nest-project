@@ -1,4 +1,13 @@
-import { IsBoolean, IsEnum, IsInt, IsOptional, IsString, IsUrl, MaxLength, Min } from 'class-validator';
+import {
+    IsBoolean,
+    IsEnum,
+    IsInt,
+    IsOptional,
+    IsString,
+    IsUrl,
+    MaxLength,
+    Min,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { AvailabilityStatus } from '../enums/availability-status.enum';
@@ -46,7 +55,9 @@ export class UpdateStoreProductDto {
 
     @ApiPropertyOptional({ minimum: 0 })
     @IsOptional()
-    @Transform(({ value }) => value === null ? value : Number(value))
+    @Transform(({ value }: { value: unknown }) =>
+        value === null ? value : Number(value),
+    )
     @IsInt()
     @Min(0)
     stockQuantity?: number | null;

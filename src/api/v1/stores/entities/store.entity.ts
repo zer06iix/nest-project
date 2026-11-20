@@ -46,5 +46,4 @@ export class Store extends Nanoid8Entity {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
-
 }

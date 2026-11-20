@@ -53,7 +53,10 @@ export class StoreProductsController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'به‌روزرسانی لیست محصول فروشگاه (فقط مدیر)' })
-    update(@Param('id', new ParseEntityIdPipe()) id: string, @Body() dto: UpdateStoreProductDto) {
+    update(
+        @Param('id', new ParseEntityIdPipe()) id: string,
+        @Body() dto: UpdateStoreProductDto,
+    ) {
         return this.storesService.updateListingById(id, dto);
     }
 
@@ -72,7 +75,8 @@ export class StoreProductsController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'ثبت قیمت اولیه لیست محصول (فقط مدیر)' })
     createPrice(
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Body() dto: UpdateStoreProductPriceDto,
     ) {
         return this.storesService.createPrice(storeProductId, dto);
@@ -84,7 +88,8 @@ export class StoreProductsController {
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'به‌روزرسانی قیمت فعلی لیست محصول (فقط مدیر)' })
     updatePrice(
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Body() dto: UpdateStoreProductPriceDto,
     ) {
         return this.storesService.updatePriceByListingId(storeProductId, dto);
@@ -92,16 +97,23 @@ export class StoreProductsController {
 
     @Get(':storeProductId/price')
     @ApiOperation({ summary: 'دریافت قیمت فعلی لیست محصول' })
-    getPrice(@Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string) {
+    getPrice(
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
+    ) {
         return this.storesService.getPrice(storeProductId);
     }
 
     @Get(':storeProductId/price-history')
     @ApiOperation({ summary: 'دریافت تاریخچه قیمت لیست محصول' })
     getPriceHistory(
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Query() query: QueryPriceHistoryDto,
     ) {
-        return this.storesService.priceHistoryByListingId(storeProductId, query);
+        return this.storesService.priceHistoryByListingId(
+            storeProductId,
+            query,
+        );
     }
 }

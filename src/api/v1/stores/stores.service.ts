@@ -21,7 +21,6 @@ import { UpdateStoreProductDto } from './dto/update-store-product.dto';
 import { UpdateStoreProductPriceDto } from './dto/update-store-product-price.dto';
 import { QueryPriceHistoryDto } from './dto/query-price-history.dto';
 import { QueryStoreProductsDto } from './dto/query-store-products.dto';
-import { AvailabilityStatus } from './enums/availability-status.enum';
 import { StockStatus } from './enums/stock-status.enum';
 import { StoreProductStatus } from './enums/store-product-status.enum';
 
@@ -43,24 +42,35 @@ export class StoresService {
 
     async create(dto: CreateStoreDto) {
         return this.saveWithConflict(
-            () => this.storeRepository.save(this.storeRepository.create({
-                ...dto,
-                status: dto.status ?? StoreStatus.PENDING,
-            })),
+            () =>
+                this.storeRepository.save(
+                    this.storeRepository.create({
+                        ...dto,
+                        status: dto.status ?? StoreStatus.PENDING,
+                    }),
+                ),
             'A store with this slug already exists',
         );
     }
 
     async findAll(query: QueryStoresDto, includeNonActive = false) {
-        const builder = this.storeRepository.createQueryBuilder('store')
+        const builder = this.storeRepository
+            .createQueryBuilder('store')
             .orderBy('store.createdAt', 'DESC');
         if (includeNonActive) {
-            if (query.status) builder.where('store.status = :status', { status: query.status });
+            if (query.status)
+                builder.where('store.status = :status', {
+                    status: query.status,
+                });
         } else {
-            builder.where('store.status = :activeStatus', { activeStatus: StoreStatus.ACTIVE });
+            builder.where('store.status = :activeStatus', {
+                activeStatus: StoreStatus.ACTIVE,
+            });
         }
         if (query.search) {
-            builder.andWhere('store.name ILIKE :search', { search: `%${query.search.trim()}%` });
+            builder.andWhere('store.name ILIKE :search', {
+                search: `%${query.search.trim()}%`,
+            });
         }
         builder.skip((query.page - 1) * query.limit).take(query.limit);
         const [items, total] = await builder.getManyAndCount();
@@ -68,42 +78,85 @@ export class StoresService {
     }
 
     async findAllListings(query: QueryStoreProductsDto) {
-        const builder = this.storeProductRepository.createQueryBuilder('listing')
+        const builder = this.storeProductRepository
+            .createQueryBuilder('listing')
             .innerJoinAndSelect('listing.store', 'store')
             .innerJoinAndSelect('listing.productVariant', 'variant')
             .innerJoinAndSelect('variant.product', 'product')
             .leftJoinAndSelect('listing.price', 'price')
-            .where('store.status = :activeStore', { activeStore: StoreStatus.ACTIVE })
+            .where('store.status = :activeStore', {
+                activeStore: StoreStatus.ACTIVE,
+            })
             .andWhere('listing.deletedAt IS NULL')
             .andWhere('listing.isActive = true')
-            .andWhere('listing.status = :listingStatus', { listingStatus: StoreProductStatus.ACTIVE });
-        if (query.search) builder.andWhere('(listing.title ILIKE :search OR listing.description ILIKE :search OR product.name ILIKE :search)', { search: `%${query.search.trim()}%` });
-        if (query.storeId) builder.andWhere('listing.storeId = :storeId', { storeId: query.storeId });
-        if (query.productId) builder.andWhere('product.id = :productId', { productId: query.productId });
-        if (query.productVariantId) builder.andWhere('listing.productVariantId = :variantId', { variantId: query.productVariantId });
-        if (query.availabilityStatus) builder.andWhere('listing.availabilityStatus = :availabilityStatus', { availabilityStatus: query.availabilityStatus });
-        if (query.stockStatus) builder.andWhere('listing.stockStatus = :stockStatus', { stockStatus: query.stockStatus });
-        if (query.status) builder.andWhere('listing.status = :status', { status: query.status });
-        if (query.minPrice) builder.andWhere('price.amount >= :minPrice', { minPrice: query.minPrice });
-        if (query.maxPrice) builder.andWhere('price.amount <= :maxPrice', { maxPrice: query.maxPrice });
-        builder.orderBy('listing.createdAt', 'DESC').skip((query.page - 1) * query.limit).take(query.limit);
+            .andWhere('listing.status = :listingStatus', {
+                listingStatus: StoreProductStatus.ACTIVE,
+            });
+        if (query.search)
+            builder.andWhere(
+                '(listing.title ILIKE :search OR listing.description ILIKE :search OR product.name ILIKE :search)',
+                { search: `%${query.search.trim()}%` },
+            );
+        if (query.storeId)
+            builder.andWhere('listing.storeId = :storeId', {
+                storeId: query.storeId,
+            });
+        if (query.productId)
+            builder.andWhere('product.id = :productId', {
+                productId: query.productId,
+            });
+        if (query.productVariantId)
+            builder.andWhere('listing.productVariantId = :variantId', {
+                variantId: query.productVariantId,
+            });
+        if (query.availabilityStatus)
+            builder.andWhere(
+                'listing.availabilityStatus = :availabilityStatus',
+                { availabilityStatus: query.availabilityStatus },
+            );
+        if (query.stockStatus)
+            builder.andWhere('listing.stockStatus = :stockStatus', {
+                stockStatus: query.stockStatus,
+            });
+        if (query.status)
+            builder.andWhere('listing.status = :status', {
+                status: query.status,
+            });
+        if (query.minPrice)
+            builder.andWhere('price.amount >= :minPrice', {
+                minPrice: query.minPrice,
+            });
+        if (query.maxPrice)
+            builder.andWhere('price.amount <= :maxPrice', {
+                maxPrice: query.maxPrice,
+            });
+        builder
+            .orderBy('listing.createdAt', 'DESC')
+            .skip((query.page - 1) * query.limit)
+            .take(query.limit);
         const [items, total] = await builder.getManyAndCount();
         return { items, total, page: query.page, limit: query.limit };
     }
 
     async findListingById(id: string) {
-        const listing = await this.storeProductRepository.createQueryBuilder('listing')
+        const listing = await this.storeProductRepository
+            .createQueryBuilder('listing')
             .innerJoinAndSelect('listing.store', 'store')
             .innerJoinAndSelect('listing.productVariant', 'variant')
             .innerJoinAndSelect('variant.product', 'product')
             .leftJoinAndSelect('listing.price', 'price')
             .where('listing.id = :id', { id })
             .andWhere('listing.deletedAt IS NULL')
-            .andWhere('listing.status = :activeStatus', { activeStatus: StoreProductStatus.ACTIVE })
+            .andWhere('listing.status = :activeStatus', {
+                activeStatus: StoreProductStatus.ACTIVE,
+            })
             .andWhere('listing.isActive = true')
-            .andWhere('store.status = :storeStatus', { storeStatus: StoreStatus.ACTIVE })
+            .andWhere('store.status = :storeStatus', {
+                storeStatus: StoreStatus.ACTIVE,
+            })
             .getOne();
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         return listing;
     }
 
@@ -114,46 +167,76 @@ export class StoresService {
 
     async updateListingById(id: string, dto: UpdateStoreProductDto) {
         const listing = await this.storeProductRepository.findOneBy({ id });
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         return this.updateListing(listing.storeId, id, dto);
     }
 
     async deactivateListingById(id: string) {
         const listing = await this.storeProductRepository.findOneBy({ id });
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         return this.deactivateListing(listing.storeId, id);
     }
 
     async updatePriceByListingId(id: string, dto: UpdateStoreProductPriceDto) {
         const listing = await this.storeProductRepository.findOneBy({ id });
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         return this.updatePrice(listing.storeId, id, dto);
     }
 
     async createPrice(id: string, dto: UpdateStoreProductPriceDto) {
-        const listing = await this.storeProductRepository.findOne({ where: { id }, relations: { price: true } });
-        if (!listing) throw new NotFoundException('Store product listing not found');
-        if (listing.price) throw new ConflictException('Store product listing already has a price');
+        const listing = await this.storeProductRepository.findOne({
+            where: { id },
+            relations: { price: true },
+        });
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
+        if (listing.price)
+            throw new ConflictException(
+                'Store product listing already has a price',
+            );
         const amount = this.validateMoney(dto.amount, 'amount');
-        const originalAmount = dto.originalAmount == null ? null : this.validateMoney(dto.originalAmount, 'originalAmount');
-        if (originalAmount !== null && Number(originalAmount) < Number(amount)) {
-            throw new BadRequestException('originalAmount must be greater than or equal to amount');
+        const originalAmount =
+            dto.originalAmount == null
+                ? null
+                : this.validateMoney(dto.originalAmount, 'originalAmount');
+        if (
+            originalAmount !== null &&
+            Number(originalAmount) < Number(amount)
+        ) {
+            throw new BadRequestException(
+                'originalAmount must be greater than or equal to amount',
+            );
         }
         return this.dataSource.transaction(async (manager) => {
             const priceRepo = manager.getRepository(Price);
-            const price = await priceRepo.save(priceRepo.create({
-                storeProductId: id, amount, originalAmount, currency: dto.currency ?? 'IRR',
-            }));
-            await manager.getRepository(PriceHistory).save(manager.getRepository(PriceHistory).create({
-                storeProductId: id, amount: price.amount, originalAmount: price.originalAmount, currency: price.currency,
-            }));
+            const price = await priceRepo.save(
+                priceRepo.create({
+                    storeProductId: id,
+                    amount,
+                    originalAmount,
+                    currency: dto.currency ?? 'IRR',
+                }),
+            );
+            await manager.getRepository(PriceHistory).save(
+                manager.getRepository(PriceHistory).create({
+                    storeProductId: id,
+                    amount: price.amount,
+                    originalAmount: price.originalAmount,
+                    currency: price.currency,
+                }),
+            );
             return price;
         });
     }
 
     async getPrice(id: string) {
         await this.findListingById(id);
-        const price = await this.priceRepository.findOneBy({ storeProductId: id });
+        const price = await this.priceRepository.findOneBy({
+            storeProductId: id,
+        });
         if (!price) throw new NotFoundException('Price not found');
         return price;
     }
@@ -164,13 +247,19 @@ export class StoresService {
     }
 
     async findOne(id: string) {
-        const store = await this.storeRepository.findOneBy({ id, status: StoreStatus.ACTIVE });
+        const store = await this.storeRepository.findOneBy({
+            id,
+            status: StoreStatus.ACTIVE,
+        });
         if (!store) throw new NotFoundException('Store not found');
         return store;
     }
 
     async findBySlug(slug: string) {
-        const store = await this.storeRepository.findOneBy({ slug, status: StoreStatus.ACTIVE });
+        const store = await this.storeRepository.findOneBy({
+            slug,
+            status: StoreStatus.ACTIVE,
+        });
         if (!store) throw new NotFoundException('Store not found');
         return store;
     }
@@ -199,48 +288,69 @@ export class StoresService {
                 id: storeId,
                 status: StoreStatus.ACTIVE,
             });
-            if (!store) throw new BadRequestException('Store must be active to add listings');
-            const variant = await manager.getRepository(ProductVariant).findOne({
-                where: { id: dto.productVariantId, isActive: true },
-                relations: { product: true },
-            });
+            if (!store)
+                throw new BadRequestException(
+                    'Store must be active to add listings',
+                );
+            const variant = await manager
+                .getRepository(ProductVariant)
+                .findOne({
+                    where: { id: dto.productVariantId, isActive: true },
+                    relations: { product: true },
+                });
             if (!variant || variant.product.status !== ProductStatus.ACTIVE) {
-                throw new BadRequestException('An active product variant is required for a listing');
+                throw new BadRequestException(
+                    'An active product variant is required for a listing',
+                );
             }
-            this.validateStock(dto.stockQuantity ?? null, dto.stockStatus ?? StockStatus.UNKNOWN);
+            this.validateStock(
+                dto.stockQuantity ?? null,
+                dto.stockStatus ?? StockStatus.UNKNOWN,
+            );
             const amount = this.validateMoney(dto.currentPrice, 'currentPrice');
-            const originalAmount = dto.originalPrice == null
-                ? null
-                : this.validateMoney(dto.originalPrice, 'originalPrice');
-            if (originalAmount !== null && Number(originalAmount) < Number(amount)) {
-                throw new BadRequestException('originalPrice must be greater than or equal to currentPrice');
+            const originalAmount =
+                dto.originalPrice == null
+                    ? null
+                    : this.validateMoney(dto.originalPrice, 'originalPrice');
+            if (
+                originalAmount !== null &&
+                Number(originalAmount) < Number(amount)
+            ) {
+                throw new BadRequestException(
+                    'originalPrice must be greater than or equal to currentPrice',
+                );
             }
 
             const listingRepository = manager.getRepository(StoreProduct);
             const listing = await this.saveWithConflict(
-                () => listingRepository.save(listingRepository.create({
-                    storeId,
-                    productVariantId: variant.id,
-                    externalProductId: dto.externalProductId ?? null,
-                    externalUrl: dto.externalUrl ?? null,
-                    title: dto.title ?? null,
-                    description: dto.description ?? null,
-                    availabilityStatus: dto.availabilityStatus,
-                    stockStatus: dto.stockStatus,
-                    isActive: dto.isActive ?? true,
-                    stockQuantity: dto.stockQuantity ?? null,
-                    status: dto.status ?? StoreProductStatus.ACTIVE,
-                })),
+                () =>
+                    listingRepository.save(
+                        listingRepository.create({
+                            storeId,
+                            productVariantId: variant.id,
+                            externalProductId: dto.externalProductId ?? null,
+                            externalUrl: dto.externalUrl ?? null,
+                            title: dto.title ?? null,
+                            description: dto.description ?? null,
+                            availabilityStatus: dto.availabilityStatus,
+                            stockStatus: dto.stockStatus,
+                            isActive: dto.isActive ?? true,
+                            stockQuantity: dto.stockQuantity ?? null,
+                            status: dto.status ?? StoreProductStatus.ACTIVE,
+                        }),
+                    ),
                 'This store already has a listing for the variant or external product ID',
             );
 
             const priceRepository = manager.getRepository(Price);
-            const price = await priceRepository.save(priceRepository.create({
-                storeProductId: listing.id,
-                amount,
-                originalAmount,
-                currency: dto.currency ?? 'IRR',
-            }));
+            const price = await priceRepository.save(
+                priceRepository.create({
+                    storeProductId: listing.id,
+                    amount,
+                    originalAmount,
+                    currency: dto.currency ?? 'IRR',
+                }),
+            );
             await manager.getRepository(PriceHistory).save(
                 manager.getRepository(PriceHistory).create({
                     storeProductId: listing.id,
@@ -251,23 +361,42 @@ export class StoresService {
             );
             return listingRepository.findOne({
                 where: { id: listing.id },
-                relations: { store: true, productVariant: { product: true }, price: true },
+                relations: {
+                    store: true,
+                    productVariant: { product: true },
+                    price: true,
+                },
             });
         });
     }
 
     async findListings(storeId: string, page = 1, limit = 20) {
-        const store = await this.storeRepository.findOneBy({ id: storeId, status: StoreStatus.ACTIVE });
+        const store = await this.storeRepository.findOneBy({
+            id: storeId,
+            status: StoreStatus.ACTIVE,
+        });
         if (!store) throw new NotFoundException('Store not found');
-        const builder = this.storeProductRepository.createQueryBuilder('listing')
-            .innerJoinAndSelect('listing.productVariant', 'variant', 'variant.isActive = true')
-            .innerJoinAndSelect('variant.product', 'product', 'product.status = :productStatus', {
-                productStatus: ProductStatus.ACTIVE,
-            })
+        const builder = this.storeProductRepository
+            .createQueryBuilder('listing')
+            .innerJoinAndSelect(
+                'listing.productVariant',
+                'variant',
+                'variant.isActive = true',
+            )
+            .innerJoinAndSelect(
+                'variant.product',
+                'product',
+                'product.status = :productStatus',
+                {
+                    productStatus: ProductStatus.ACTIVE,
+                },
+            )
             .leftJoinAndSelect('listing.price', 'price')
             .where('listing.storeId = :storeId', { storeId })
             .andWhere('listing.isActive = true')
-            .andWhere('listing.status = :listingStatus', { listingStatus: StoreProductStatus.ACTIVE })
+            .andWhere('listing.status = :listingStatus', {
+                listingStatus: StoreProductStatus.ACTIVE,
+            })
             .andWhere('listing.deletedAt IS NULL')
             .orderBy('listing.createdAt', 'DESC')
             .skip((page - 1) * limit)
@@ -277,27 +406,54 @@ export class StoresService {
     }
 
     async findListing(storeId: string, listingId: string) {
-        const listing = await this.storeProductRepository.createQueryBuilder('listing')
-            .innerJoinAndSelect('listing.store', 'store', 'store.status = :storeStatus', {
-                storeStatus: StoreStatus.ACTIVE,
-            })
-            .innerJoinAndSelect('listing.productVariant', 'variant', 'variant.isActive = true')
-            .innerJoinAndSelect('variant.product', 'product', 'product.status = :productStatus', {
-                productStatus: ProductStatus.ACTIVE,
-            })
+        const listing = await this.storeProductRepository
+            .createQueryBuilder('listing')
+            .innerJoinAndSelect(
+                'listing.store',
+                'store',
+                'store.status = :storeStatus',
+                {
+                    storeStatus: StoreStatus.ACTIVE,
+                },
+            )
+            .innerJoinAndSelect(
+                'listing.productVariant',
+                'variant',
+                'variant.isActive = true',
+            )
+            .innerJoinAndSelect(
+                'variant.product',
+                'product',
+                'product.status = :productStatus',
+                {
+                    productStatus: ProductStatus.ACTIVE,
+                },
+            )
             .leftJoinAndSelect('listing.price', 'price')
             .where('listing.id = :listingId', { listingId })
             .andWhere('listing.storeId = :storeId', { storeId })
             .andWhere('listing.isActive = true')
             .getOne();
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         return listing;
     }
 
-    async updateListing(storeId: string, listingId: string, dto: UpdateStoreProductDto) {
-        const listing = await this.storeProductRepository.findOneBy({ id: listingId, storeId });
-        if (!listing) throw new NotFoundException('Store product listing not found');
-        const stockQuantity = dto.stockQuantity === undefined ? listing.stockQuantity : dto.stockQuantity;
+    async updateListing(
+        storeId: string,
+        listingId: string,
+        dto: UpdateStoreProductDto,
+    ) {
+        const listing = await this.storeProductRepository.findOneBy({
+            id: listingId,
+            storeId,
+        });
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
+        const stockQuantity =
+            dto.stockQuantity === undefined
+                ? listing.stockQuantity
+                : dto.stockQuantity;
         const stockStatus = dto.stockStatus ?? listing.stockStatus;
         this.validateStock(stockQuantity, stockStatus);
         Object.assign(listing, dto);
@@ -308,29 +464,50 @@ export class StoresService {
     }
 
     async deactivateListing(storeId: string, listingId: string) {
-        const listing = await this.storeProductRepository.findOneBy({ id: listingId, storeId });
-        if (!listing) throw new NotFoundException('Store product listing not found');
+        const listing = await this.storeProductRepository.findOneBy({
+            id: listingId,
+            storeId,
+        });
+        if (!listing)
+            throw new NotFoundException('Store product listing not found');
         listing.isActive = false;
         await this.storeProductRepository.save(listing);
         return { id: listing.id, isActive: false };
     }
 
-    async updatePrice(storeId: string, listingId: string, dto: UpdateStoreProductPriceDto) {
+    async updatePrice(
+        storeId: string,
+        listingId: string,
+        dto: UpdateStoreProductPriceDto,
+    ) {
         return this.dataSource.transaction(async (manager) => {
             const listing = await manager.getRepository(StoreProduct).findOne({
                 where: { id: listingId, storeId },
                 relations: { price: true },
             });
-            if (!listing) throw new NotFoundException('Store product listing not found');
-            if (!listing.price) throw new ConflictException('Store product listing has no current price');
+            if (!listing)
+                throw new NotFoundException('Store product listing not found');
+            if (!listing.price)
+                throw new ConflictException(
+                    'Store product listing has no current price',
+                );
             const nextAmount = this.validateMoney(dto.amount, 'amount');
-            const nextOriginal = dto.originalAmount === undefined
-                ? listing.price.originalAmount
-                : dto.originalAmount === null
-                    ? null
-                    : this.validateMoney(dto.originalAmount, 'originalAmount');
-            if (nextOriginal !== null && Number(nextOriginal) < Number(nextAmount)) {
-                throw new BadRequestException('originalAmount must be greater than or equal to amount');
+            const nextOriginal =
+                dto.originalAmount === undefined
+                    ? listing.price.originalAmount
+                    : dto.originalAmount === null
+                      ? null
+                      : this.validateMoney(
+                            dto.originalAmount,
+                            'originalAmount',
+                        );
+            if (
+                nextOriginal !== null &&
+                Number(nextOriginal) < Number(nextAmount)
+            ) {
+                throw new BadRequestException(
+                    'originalAmount must be greater than or equal to amount',
+                );
             }
 
             const priceRepository = manager.getRepository(Price);
@@ -360,20 +537,40 @@ export class StoresService {
         });
     }
 
-    async priceHistory(storeId: string, listingId: string, query: QueryPriceHistoryDto) {
+    async priceHistory(
+        storeId: string,
+        listingId: string,
+        query: QueryPriceHistoryDto,
+    ) {
         await this.findListing(storeId, listingId);
         return this.priceHistoryWithQuery(listingId, query);
     }
 
-    private async priceHistoryWithQuery(listingId: string, query: QueryPriceHistoryDto) {
-        if (query.startDate && query.endDate && new Date(query.startDate) > new Date(query.endDate)) {
-            throw new BadRequestException('startDate must be before or equal to endDate');
+    private async priceHistoryWithQuery(
+        listingId: string,
+        query: QueryPriceHistoryDto,
+    ) {
+        if (
+            query.startDate &&
+            query.endDate &&
+            new Date(query.startDate) > new Date(query.endDate)
+        ) {
+            throw new BadRequestException(
+                'startDate must be before or equal to endDate',
+            );
         }
-        const builder = this.priceHistoryRepository.createQueryBuilder('history')
+        const builder = this.priceHistoryRepository
+            .createQueryBuilder('history')
             .where('history.storeProductId = :listingId', { listingId })
             .orderBy('history.recordedAt', query.sort);
-        if (query.startDate) builder.andWhere('history.recordedAt >= :startDate', { startDate: query.startDate });
-        if (query.endDate) builder.andWhere('history.recordedAt <= :endDate', { endDate: query.endDate });
+        if (query.startDate)
+            builder.andWhere('history.recordedAt >= :startDate', {
+                startDate: query.startDate,
+            });
+        if (query.endDate)
+            builder.andWhere('history.recordedAt <= :endDate', {
+                endDate: query.endDate,
+            });
         builder.skip((query.page - 1) * query.limit).take(query.limit);
         const [items, total] = await builder.getManyAndCount();
         return { items, total, page: query.page, limit: query.limit };
@@ -384,24 +581,50 @@ export class StoresService {
         if (!/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/.test(normalized)) {
             throw new BadRequestException(`${field} must be a decimal value`);
         }
-        if (Number(normalized) <= 0) throw new BadRequestException(`${field} must be greater than zero`);
+        if (Number(normalized) <= 0)
+            throw new BadRequestException(`${field} must be greater than zero`);
         return normalized.includes('.') ? normalized : `${normalized}.000000`;
     }
 
-    private validateStock(stockQuantity: number | null, stockStatus: StockStatus): void {
-        if (stockQuantity !== null && stockStatus === StockStatus.OUT_OF_STOCK && stockQuantity !== 0) {
-            throw new BadRequestException('OUT_OF_STOCK listings must have stockQuantity 0');
+    private validateStock(
+        stockQuantity: number | null,
+        stockStatus: StockStatus,
+    ): void {
+        if (
+            stockQuantity !== null &&
+            stockStatus === StockStatus.OUT_OF_STOCK &&
+            stockQuantity !== 0
+        ) {
+            throw new BadRequestException(
+                'OUT_OF_STOCK listings must have stockQuantity 0',
+            );
         }
-        if (stockQuantity !== null && stockStatus === StockStatus.IN_STOCK && stockQuantity <= 0) {
-            throw new BadRequestException('IN_STOCK listings must have positive stockQuantity');
+        if (
+            stockQuantity !== null &&
+            stockStatus === StockStatus.IN_STOCK &&
+            stockQuantity <= 0
+        ) {
+            throw new BadRequestException(
+                'IN_STOCK listings must have positive stockQuantity',
+            );
         }
     }
 
-    private async saveWithConflict<T>(save: () => Promise<T>, message: string): Promise<T> {
+    private async saveWithConflict<T>(
+        save: () => Promise<T>,
+        message: string,
+    ): Promise<T> {
         try {
             return await save();
         } catch (error) {
-            if (error instanceof QueryFailedError && error.driverError.code === '23505') {
+            if (
+                error instanceof QueryFailedError &&
+                error.driverError &&
+                typeof error.driverError === 'object' &&
+                error.driverError !== null &&
+                'code' in error.driverError &&
+                (error.driverError as { code?: unknown }).code === '23505'
+            ) {
                 throw new ConflictException(message);
             }
             throw error;

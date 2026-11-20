@@ -49,7 +49,10 @@ export class StoresController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'جست‌وجو در همه فروشگاه‌ها از جمله در انتظار و معلق (فقط مدیر)' })
+    @ApiOperation({
+        summary:
+            'جست‌وجو در همه فروشگاه‌ها از جمله در انتظار و معلق (فقط مدیر)',
+    })
     findAllForAdmin(@Query() query: QueryStoresDto) {
         return this.storesService.findAll(query, true);
     }
@@ -61,10 +64,13 @@ export class StoresController {
     }
 
     @Get(':id/products/:storeProductId/price-history')
-    @ApiOperation({ summary: 'دریافت تاریخچه قیمت لیست فروشگاه به‌صورت صفحه‌بندی‌شده' })
+    @ApiOperation({
+        summary: 'دریافت تاریخچه قیمت لیست فروشگاه به‌صورت صفحه‌بندی‌شده',
+    })
     priceHistory(
         @Param('id', new ParseEntityIdPipe()) id: string,
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Query() query: QueryPriceHistoryDto,
     ) {
         return this.storesService.priceHistory(id, storeProductId, query);
@@ -74,7 +80,8 @@ export class StoresController {
     @ApiOperation({ summary: 'دریافت لیست فعال محصول فروشگاه' })
     findListing(
         @Param('id', new ParseEntityIdPipe()) id: string,
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
     ) {
         return this.storesService.findListing(id, storeProductId);
     }
@@ -119,7 +126,9 @@ export class StoresController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'ایجاد لیست فروشگاه و ثبت تاریخچه قیمت اولیه (فقط مدیر)' })
+    @ApiOperation({
+        summary: 'ایجاد لیست فروشگاه و ثبت تاریخچه قیمت اولیه (فقط مدیر)',
+    })
     createListing(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Body() dto: CreateStoreProductDto,
@@ -131,10 +140,14 @@ export class StoresController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی جزئیات لیست؛ قیمت باید از مسیر قیمت تغییر کند (فقط مدیر)' })
+    @ApiOperation({
+        summary:
+            'به‌روزرسانی جزئیات لیست؛ قیمت باید از مسیر قیمت تغییر کند (فقط مدیر)',
+    })
     updateListing(
         @Param('id', new ParseEntityIdPipe()) id: string,
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Body() dto: UpdateStoreProductDto,
     ) {
         return this.storesService.updateListing(id, storeProductId, dto);
@@ -147,7 +160,8 @@ export class StoresController {
     @ApiOperation({ summary: 'غیرفعال‌سازی لیست فروشگاه (فقط مدیر)' })
     deactivateListing(
         @Param('id', new ParseEntityIdPipe()) id: string,
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
     ) {
         return this.storesService.deactivateListing(id, storeProductId);
     }
@@ -156,10 +170,13 @@ export class StoresController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی قیمت لیست و افزودن به تاریخچه قیمت (فقط مدیر)' })
+    @ApiOperation({
+        summary: 'به‌روزرسانی قیمت لیست و افزودن به تاریخچه قیمت (فقط مدیر)',
+    })
     updatePrice(
         @Param('id', new ParseEntityIdPipe()) id: string,
-        @Param('storeProductId', new ParseEntityIdPipe()) storeProductId: string,
+        @Param('storeProductId', new ParseEntityIdPipe())
+        storeProductId: string,
         @Body() dto: UpdateStoreProductPriceDto,
     ) {
         return this.storesService.updatePrice(id, storeProductId, dto);

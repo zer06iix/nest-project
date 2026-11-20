@@ -7,7 +7,6 @@ import {
     IsString,
     IsUrl,
     Matches,
-    Max,
     MaxLength,
     Min,
 } from 'class-validator';
@@ -37,14 +36,23 @@ export class CreateStoreProductDto {
     @ApiProperty({ minimum: 0 })
     @Transform(({ value }) => String(value))
     @IsString()
-    @Matches(/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/, { message: 'currentPrice must be a positive decimal' })
+    @Matches(/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/, {
+        message: 'currentPrice must be a positive decimal',
+    })
     currentPrice!: string;
 
     @ApiPropertyOptional({ minimum: 0, maximum: Number.MAX_SAFE_INTEGER })
     @IsOptional()
-    @Transform(({ value }) => value === null ? value : String(value))
+    @Transform(({ value }: { value: unknown }) => {
+        if (value === null) return value;
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number') return value.toString();
+        return JSON.stringify(value);
+    })
     @IsString()
-    @Matches(/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/, { message: 'originalPrice must be a decimal' })
+    @Matches(/^(?:0|[1-9]\d*)(?:\.\d{1,6})?$/, {
+        message: 'originalPrice must be a decimal',
+    })
     originalPrice?: string | null;
 
     @ApiPropertyOptional({ default: 'IRR', minLength: 3, maxLength: 3 })
