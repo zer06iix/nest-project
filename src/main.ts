@@ -7,8 +7,14 @@ import { TransformInterceptor } from './api/v1/common/interceptors/response.inte
 import { AllExceptionsFilter } from './api/v1/common/filters/http-exception.filter';
 import cookieParser from 'cookie-parser';
 
+interface HotModule {
+    hot?: {
+        accept: () => void;
+        dispose: (callback: () => Promise<void>) => void;
+    };
+}
 
-declare const module: any;
+declare const module: HotModule;
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -18,7 +24,7 @@ async function bootstrap() {
         module.hot.accept();
         module.hot.dispose(() => app.close());
     }
-    
+
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
@@ -28,15 +34,14 @@ async function bootstrap() {
     );
     app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
     app.useGlobalFilters(new AllExceptionsFilter());
-    
+
     app.setGlobalPrefix('api');
-    
+
     app.enableVersioning({
         type: VersioningType.URI,
         defaultVersion: process.env.API_VERSION,
     });
 
-    
     const config = new DocumentBuilder()
         .setTitle('فروشگاه لباس api')
         .setDescription('برای کلاینت api مستندات و راهنمای مسیر های')
@@ -62,15 +67,10 @@ async function bootstrap() {
         // )
         .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup(
-        'api/v1/documents',
-        app,
-        documentFactory,
-        {
-            customSiteTitle: "مستندات فروشگاه",
-        }
-    );
+    SwaggerModule.setup('api/v1/documents', app, documentFactory, {
+        customSiteTitle: 'مستندات فروشگاه',
+    });
 
     await app.listen(process.env.PORT ?? 3000);
 }
-bootstrap();
+void bootstrap();
