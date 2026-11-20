@@ -1,9 +1,25 @@
 import {
-    Body, Controller, DefaultValuePipe, Get, HttpCode, HttpStatus, Param,
-    ParseIntPipe, Patch, Post, Query, Req, UseGuards,
+    Body,
+    Controller,
+    DefaultValuePipe,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    Req,
+    UseGuards,
 } from '@nestjs/common';
 import { type Request } from 'express';
-import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiOperation,
+    ApiQuery,
+    ApiTags,
+} from '@nestjs/swagger';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { CreateTicketMessageDto } from './dto/create-ticket-message.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -45,7 +61,13 @@ export class TicketsController {
         @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit: number,
         @Query('status') status?: TicketStatus,
     ) {
-        return this.ticketService.findAll(req.user.userId, req.user.role, page, Math.min(limit, 100), status);
+        return this.ticketService.findAll(
+            req.user.userId,
+            req.user.role,
+            page,
+            Math.min(limit, 100),
+            status,
+        );
     }
 
     // @Roles(Role.ADMIN)
@@ -55,12 +77,21 @@ export class TicketsController {
     findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
         return this.ticketService.findOne(id, req.user.userId, req.user.role);
     }
-    
+
     @Patch(':id')
     @ResponseMessage('تیکت با موفقیت بروزرسانی شد')
     @ApiOperation({ summary: 'بروزرسانی تیکت؛ وضعیت و تخصیص برای مدیر' })
-    update(@Param('id') id: string, @Body() dto: UpdateTicketDto, @Req() req: AuthenticatedRequest) {
-        return this.ticketService.update(id, dto, req.user.userId, req.user.role);
+    update(
+        @Param('id') id: string,
+        @Body() dto: UpdateTicketDto,
+        @Req() req: AuthenticatedRequest,
+    ) {
+        return this.ticketService.update(
+            id,
+            dto,
+            req.user.userId,
+            req.user.role,
+        );
     }
 
     @Post(':id/messages')
@@ -72,6 +103,11 @@ export class TicketsController {
         @Body() dto: CreateTicketMessageDto,
         @Req() req: AuthenticatedRequest,
     ) {
-        return this.ticketService.addMessage(id, req.user.userId, req.user.role, dto.body);
+        return this.ticketService.addMessage(
+            id,
+            req.user.userId,
+            req.user.role,
+            dto.body,
+        );
     }
 }

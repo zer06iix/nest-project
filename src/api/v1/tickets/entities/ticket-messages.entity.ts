@@ -1,14 +1,20 @@
-import { User } from "api/v1/users/entities/user.entity";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, UpdateDateColumn } from "typeorm";
-import { Ticket } from "./ticket.entity";
-import { NanoidEntity } from "../../common/entities/nanoid.entity";
-
+import { User } from 'api/v1/users/entities/user.entity';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToOne,
+    UpdateDateColumn,
+} from 'typeorm';
+import { Ticket } from './ticket.entity';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 @Entity('ticket_message')
 export class TicketMessage extends NanoidEntity {
     @Column({ type: 'varchar', length: 36, nullable: false, name: 'ticket_id' })
     ticketId!: string;
-    
+
     @Column({ type: 'varchar', length: 36, nullable: false, name: 'sender_id' })
     senderId!: string;
 
@@ -32,6 +38,4 @@ export class TicketMessage extends NanoidEntity {
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
-
-
 }
