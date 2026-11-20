@@ -1,16 +1,23 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from "@nestjs/common";
-import { RegisterDto } from "./dto/register.dto";
-import { LoginDto } from "./dto/login.dto";
-import { AuthService } from "./auth.service";
-import { ResponseMessage } from "../common/decorators/response-message.decorator";
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
-import { type Request, type Response } from "express";
-import { ConfigService } from "@nestjs/config";
-import { RoleGuard } from "../common/guards/role.guard";
-import { JwtAccessGuard } from "./guards/jwt-access.guard";
-import { JwtRefreshGuard } from "./guards/jwt-refresh.guard";
-import { GetToken } from "./decorators/get-token.decorator";
-
+import {
+    Body,
+    Controller,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Req,
+    Res,
+    UseGuards,
+} from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
+import { AuthService } from './auth.service';
+import { ResponseMessage } from '../common/decorators/response-message.decorator';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { type Request, type Response } from 'express';
+import { RoleGuard } from '../common/guards/role.guard';
+import { JwtAccessGuard } from './guards/jwt-access.guard';
+import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { GetToken } from './decorators/get-token.decorator';
 
 @ApiTags('احراز هویت')
 @Controller('auth')
@@ -20,9 +27,9 @@ export class AuthController {
     @Post('register')
     @HttpCode(HttpStatus.CREATED)
     @ResponseMessage('با موفقیت ثبت نام کردید')
-    @ApiOperation({ summary: "ثبت نام" })
+    @ApiOperation({ summary: 'ثبت نام' })
     @ApiBody({ type: RegisterDto })
-    async register(@Body() registerDto: RegisterDto,) {
+    async register(@Body() registerDto: RegisterDto) {
         const createdUser = await this.authService.register(
             registerDto.phoneNumber,
             registerDto.displayName,
@@ -30,23 +37,24 @@ export class AuthController {
         );
         return createdUser;
     }
-    
+
     @Post('login')
     @HttpCode(HttpStatus.OK)
     @ResponseMessage('با موفقیت وارد شدید')
-    @ApiOperation({ summary: "وارد شدن" })
+    @ApiOperation({ summary: 'وارد شدن' })
     @ApiBody({ type: LoginDto })
     async login(
         @Res({ passthrough: true }) res: Response,
         @Body() loginDto: LoginDto,
     ) {
-        const {payload, accessToken, refreshToken } = await this.authService.login(
-            loginDto.phoneNumber,
-            loginDto.password,
-        );
+        const { payload, accessToken, refreshToken } =
+            await this.authService.login(
+                loginDto.phoneNumber,
+                loginDto.password,
+            );
 
         this.setRefreshCookie(res, refreshToken);
-        this.authService.storeRefreshToken(payload.sub, refreshToken)
+        await this.authService.storeRefreshToken(payload.sub, refreshToken);
 
         return { accessToken };
     }
@@ -55,18 +63,18 @@ export class AuthController {
     @Post('logout')
     @HttpCode(HttpStatus.OK)
     @ResponseMessage('با موفقیت از حساب خود خارج شدید')
-    @ApiOperation({ summary: "خروج از حساب" })
+    @ApiOperation({ summary: 'خروج از حساب' })
     async logout(
         @Req() req: Request,
         @Res({ passthrough: true }) res: Response,
-        @GetToken() accessToken: string
+        @GetToken() accessToken: string,
     ) {
         const user = req.user as { userId: string };
-        
+
         await this.authService.logout(accessToken, user.userId);
         res.clearCookie('refresh_token');
     }
-    
+
     @UseGuards(JwtRefreshGuard, RoleGuard)
     @Post('refresh')
     @HttpCode(HttpStatus.OK)
@@ -77,23 +85,23 @@ export class AuthController {
         @Res({ passthrough: true }) res: Response,
     ) {
         const userFromToken = req.user as { id: string; refreshToken: string };
-        
-        const { accessToken, refreshToken } = await this.authService.refreshTokens(
-            userFromToken.id,
-            userFromToken.refreshToken
-        );
+
+        const { accessToken, refreshToken } =
+            await this.authService.refreshTokens(
+                userFromToken.id,
+                userFromToken.refreshToken,
+            );
 
         this.setRefreshCookie(res, refreshToken);
         return { accessToken };
-
     }
 
     private setRefreshCookie(res: Response, refreshToken: string) {
         res.cookie('refresh_token', refreshToken, {
-            sameSite: "strict",
+            sameSite: 'strict',
             secure: process.env.NODE_ENV === 'production',
             maxAge: 30 * 24 * 60 * 60 * 1000,
-            httpOnly: true
-        })
+            httpOnly: true,
+        });
     }
 }
