@@ -27,18 +27,25 @@ export class CategoriesService {
 
     async create(dto: CreateCategoryDto) {
         if (await this.categoryRepository.existsBy({ slug: dto.slug })) {
-            throw new ConflictException('A category with this slug already exists');
+            throw new ConflictException(
+                'A category with this slug already exists',
+            );
         }
 
         if (dto.parentId) {
             const parent = await this.findCategoryById(dto.parentId);
             if (!parent.isActive) {
-                throw new BadRequestException('An inactive category cannot be used as a parent');
+                throw new BadRequestException(
+                    'An inactive category cannot be used as a parent',
+                );
             }
         }
 
         return this.saveWithConflict(
-            () => this.categoryRepository.save(this.categoryRepository.create(dto)),
+            () =>
+                this.categoryRepository.save(
+                    this.categoryRepository.create(dto),
+                ),
             'A category with this slug already exists',
         );
     }
@@ -80,23 +87,31 @@ export class CategoriesService {
     async update(id: string, dto: UpdateCategoryDto) {
         const category = await this.findCategoryById(id);
         if (Object.keys(dto).length === 0) {
-            throw new BadRequestException('At least one category field must be provided');
+            throw new BadRequestException(
+                'At least one category field must be provided',
+            );
         }
 
         if (dto.slug && dto.slug !== category.slug) {
             if (await this.categoryRepository.existsBy({ slug: dto.slug })) {
-                throw new ConflictException('A category with this slug already exists');
+                throw new ConflictException(
+                    'A category with this slug already exists',
+                );
             }
         }
 
         if (dto.parentId !== undefined) {
             if (dto.parentId === id) {
-                throw new BadRequestException('A category cannot be its own parent');
+                throw new BadRequestException(
+                    'A category cannot be its own parent',
+                );
             }
             if (dto.parentId) {
                 const parent = await this.findCategoryById(dto.parentId);
                 if (!parent.isActive) {
-                    throw new BadRequestException('An inactive category cannot be used as a parent');
+                    throw new BadRequestException(
+                        'An inactive category cannot be used as a parent',
+                    );
                 }
                 await this.assertNoParentCycle(id, dto.parentId);
             }
@@ -111,8 +126,15 @@ export class CategoriesService {
 
     async deactivate(id: string) {
         const category = await this.findCategoryById(id);
-        if (await this.categoryRepository.existsBy({ parentId: id, isActive: true })) {
-            throw new BadRequestException('Deactivate active child categories before deactivating this category');
+        if (
+            await this.categoryRepository.existsBy({
+                parentId: id,
+                isActive: true,
+            })
+        ) {
+            throw new BadRequestException(
+                'Deactivate active child categories before deactivating this category',
+            );
         }
         category.isActive = false;
         await this.categoryRepository.save(category);
@@ -125,12 +147,16 @@ export class CategoriesService {
             id: dto.attributeId,
             isActive: true,
         });
-        if (!attribute) throw new NotFoundException('Active attribute not found');
+        if (!attribute)
+            throw new NotFoundException('Active attribute not found');
         const existing = await this.categoryAttributeRepository.findOneBy({
             categoryId,
             attributeId: dto.attributeId,
         });
-        if (existing) throw new ConflictException('This attribute is already assigned to the category');
+        if (existing)
+            throw new ConflictException(
+                'This attribute is already assigned to the category',
+            );
 
         const categoryAttribute = this.categoryAttributeRepository.create({
             ...dto,
@@ -147,13 +173,19 @@ export class CategoriesService {
         attributeId: string,
         dto: UpdateCategoryAttributeDto,
     ) {
-        const categoryAttribute = await this.categoryAttributeRepository.findOneBy({
-            categoryId,
-            attributeId,
-        });
-        if (!categoryAttribute) throw new NotFoundException('Category attribute configuration not found');
+        const categoryAttribute =
+            await this.categoryAttributeRepository.findOneBy({
+                categoryId,
+                attributeId,
+            });
+        if (!categoryAttribute)
+            throw new NotFoundException(
+                'Category attribute configuration not found',
+            );
         if (Object.keys(dto).length === 0) {
-            throw new BadRequestException('At least one configuration field must be provided');
+            throw new BadRequestException(
+                'At least one configuration field must be provided',
+            );
         }
 
         Object.assign(categoryAttribute, dto);
@@ -161,8 +193,14 @@ export class CategoriesService {
     }
 
     async removeAttribute(categoryId: string, attributeId: string) {
-        const result = await this.categoryAttributeRepository.delete({ categoryId, attributeId });
-        if (!result.affected) throw new NotFoundException('Category attribute configuration not found');
+        const result = await this.categoryAttributeRepository.delete({
+            categoryId,
+            attributeId,
+        });
+        if (!result.affected)
+            throw new NotFoundException(
+                'Category attribute configuration not found',
+            );
         return { categoryId, attributeId };
     }
 
@@ -172,27 +210,44 @@ export class CategoriesService {
         return category;
     }
 
-    private async saveWithConflict<T>(save: () => Promise<T>, message: string): Promise<T> {
+    private async saveWithConflict<T>(
+        save: () => Promise<T>,
+        message: string,
+    ): Promise<T> {
         try {
             return await save();
         } catch (error) {
-            if (error instanceof QueryFailedError && error.driverError.code === '23505') {
+            if (
+                error instanceof QueryFailedError &&
+                error.driverError &&
+                typeof error.driverError === 'object' &&
+                error.driverError !== null &&
+                'code' in error.driverError &&
+                (error.driverError as { code?: unknown }).code === '23505'
+            ) {
                 throw new ConflictException(message);
             }
             throw error;
         }
     }
 
-    private async assertNoParentCycle(categoryId: string, proposedParentId: string) {
+    private async assertNoParentCycle(
+        categoryId: string,
+        proposedParentId: string,
+    ) {
         const visited = new Set<string>();
         let currentId: string | null = proposedParentId;
 
         while (currentId) {
             if (currentId === categoryId) {
-                throw new BadRequestException('A category cannot be moved under one of its descendants');
+                throw new BadRequestException(
+                    'A category cannot be moved under one of its descendants',
+                );
             }
             if (visited.has(currentId)) {
-                throw new BadRequestException('The existing category hierarchy contains a cycle');
+                throw new BadRequestException(
+                    'The existing category hierarchy contains a cycle',
+                );
             }
             visited.add(currentId);
             const parent = await this.categoryRepository.findOne({

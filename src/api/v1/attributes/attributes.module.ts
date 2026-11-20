@@ -9,8 +9,11 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attribute, AttributeOption]), UsersModule],
-  controllers: [AttributesController],
-  providers: [AttributesService, JwtAccessGuard, RoleGuard],
+    imports: [
+        TypeOrmModule.forFeature([Attribute, AttributeOption]),
+        UsersModule,
+    ],
+    controllers: [AttributesController],
+    providers: [AttributesService, JwtAccessGuard, RoleGuard],
 })
 export class AttributesModule {}

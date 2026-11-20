@@ -25,10 +25,15 @@ export class AttributesService {
 
     async create(dto: CreateAttributeDto) {
         if (await this.attributeRepository.existsBy({ slug: dto.slug })) {
-            throw new ConflictException('An attribute with this slug already exists');
+            throw new ConflictException(
+                'An attribute with this slug already exists',
+            );
         }
         return this.saveWithConflict(
-            () => this.attributeRepository.save(this.attributeRepository.create(dto)),
+            () =>
+                this.attributeRepository.save(
+                    this.attributeRepository.create(dto),
+                ),
             'An attribute with this slug already exists',
         );
     }
@@ -42,26 +47,33 @@ export class AttributesService {
 
     async findOne(id: string) {
         const attribute = await this.findAttributeById(id);
-        if (!attribute.isActive) throw new NotFoundException('Attribute not found');
+        if (!attribute.isActive)
+            throw new NotFoundException('Attribute not found');
         return attribute;
     }
 
     async update(id: string, dto: UpdateAttributeDto) {
         const attribute = await this.findAttributeById(id);
         if (Object.keys(dto).length === 0) {
-            throw new BadRequestException('At least one attribute field must be provided');
+            throw new BadRequestException(
+                'At least one attribute field must be provided',
+            );
         }
         if (dto.slug && dto.slug !== attribute.slug) {
             if (await this.attributeRepository.existsBy({ slug: dto.slug })) {
-                throw new ConflictException('An attribute with this slug already exists');
+                throw new ConflictException(
+                    'An attribute with this slug already exists',
+                );
             }
         }
         if (
             dto.dataType &&
             dto.dataType !== attribute.dataType &&
-            await this.optionRepository.existsBy({ attributeId: id })
+            (await this.optionRepository.existsBy({ attributeId: id }))
         ) {
-            throw new BadRequestException('The data type cannot change while the attribute has options');
+            throw new BadRequestException(
+                'The data type cannot change while the attribute has options',
+            );
         }
 
         Object.assign(attribute, dto);
@@ -80,7 +92,8 @@ export class AttributesService {
 
     async findOptions(attributeId: string) {
         const attribute = await this.findAttributeById(attributeId);
-        if (!attribute.isActive) throw new NotFoundException('Attribute not found');
+        if (!attribute.isActive)
+            throw new NotFoundException('Attribute not found');
         return this.optionRepository.find({
             where: { attributeId, isActive: true },
             order: { label: 'ASC' },
@@ -89,15 +102,28 @@ export class AttributesService {
 
     async createOption(attributeId: string, dto: CreateAttributeOptionDto) {
         const attribute = await this.findAttributeById(attributeId);
-        if (!attribute.isActive) throw new NotFoundException('Attribute not found');
+        if (!attribute.isActive)
+            throw new NotFoundException('Attribute not found');
         if (attribute.dataType !== AttributeDataType.OPTION) {
-            throw new BadRequestException('Options can only be added to OPTION attributes');
+            throw new BadRequestException(
+                'Options can only be added to OPTION attributes',
+            );
         }
-        if (await this.optionRepository.existsBy({ attributeId, value: dto.value })) {
-            throw new ConflictException('This option value already exists for the attribute');
+        if (
+            await this.optionRepository.existsBy({
+                attributeId,
+                value: dto.value,
+            })
+        ) {
+            throw new ConflictException(
+                'This option value already exists for the attribute',
+            );
         }
         return this.saveWithConflict(
-            () => this.optionRepository.save(this.optionRepository.create({ ...dto, attributeId })),
+            () =>
+                this.optionRepository.save(
+                    this.optionRepository.create({ ...dto, attributeId }),
+                ),
             'This option value already exists for the attribute',
         );
     }
@@ -106,14 +132,19 @@ export class AttributesService {
         const option = await this.optionRepository.findOneBy({ id: optionId });
         if (!option) throw new NotFoundException('Attribute option not found');
         if (Object.keys(dto).length === 0) {
-            throw new BadRequestException('At least one option field must be provided');
+            throw new BadRequestException(
+                'At least one option field must be provided',
+            );
         }
         if (dto.value && dto.value !== option.value) {
             const duplicate = await this.optionRepository.existsBy({
                 attributeId: option.attributeId,
                 value: dto.value,
             });
-            if (duplicate) throw new ConflictException('This option value already exists for the attribute');
+            if (duplicate)
+                throw new ConflictException(
+                    'This option value already exists for the attribute',
+                );
         }
         Object.assign(option, dto);
         return this.saveWithConflict(
@@ -136,11 +167,21 @@ export class AttributesService {
         return attribute;
     }
 
-    private async saveWithConflict<T>(save: () => Promise<T>, message: string): Promise<T> {
+    private async saveWithConflict<T>(
+        save: () => Promise<T>,
+        message: string,
+    ): Promise<T> {
         try {
             return await save();
         } catch (error) {
-            if (error instanceof QueryFailedError && error.driverError.code === '23505') {
+            if (
+                error instanceof QueryFailedError &&
+                error.driverError &&
+                typeof error.driverError === 'object' &&
+                error.driverError !== null &&
+                'code' in error.driverError &&
+                (error.driverError as { code?: unknown }).code === '23505'
+            ) {
                 throw new ConflictException(message);
             }
             throw error;

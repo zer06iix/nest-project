@@ -89,7 +89,9 @@ export class CategoriesController {
     @UseGuards(JwtAccessGuard, RoleGuard)
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی پیکربندی ویژگی دسته‌بندی (فقط مدیر)' })
+    @ApiOperation({
+        summary: 'به‌روزرسانی پیکربندی ویژگی دسته‌بندی (فقط مدیر)',
+    })
     updateAttribute(
         @Param('id', new ParseEntityIdPipe()) id: string,
         @Param('attributeId', new ParseEntityIdPipe()) attributeId: string,

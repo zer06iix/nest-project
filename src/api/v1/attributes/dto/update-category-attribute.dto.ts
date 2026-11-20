@@ -13,12 +13,16 @@ export class UpdateCategoryAttributeDto {
     @IsBoolean()
     isFilterable?: boolean;
 
-    @ApiPropertyOptional({ description: 'آیا این ویژگی روی کارت نمایش داده می‌شود؟' })
+    @ApiPropertyOptional({
+        description: 'آیا این ویژگی روی کارت نمایش داده می‌شود؟',
+    })
     @IsOptional()
     @IsBoolean()
     isVisibleOnCard?: boolean;
 
-    @ApiPropertyOptional({ description: 'آیا این ویژگی در صفحه محصول نمایش داده می‌شود؟' })
+    @ApiPropertyOptional({
+        description: 'آیا این ویژگی در صفحه محصول نمایش داده می‌شود؟',
+    })
     @IsOptional()
     @IsBoolean()
     isVisibleOnProduct?: boolean;

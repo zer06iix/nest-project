@@ -32,7 +32,12 @@ export class Category extends NanoidEntity {
     @Column({ name: 'seo_title', type: 'varchar', length: 160, nullable: true })
     seoTitle!: string | null;
 
-    @Column({ name: 'seo_description', type: 'varchar', length: 320, nullable: true })
+    @Column({
+        name: 'seo_description',
+        type: 'varchar',
+        length: 320,
+        nullable: true,
+    })
     seoDescription!: string | null;
 
     @Column({ name: 'parent_id', type: 'varchar', length: 36, nullable: true })
@@ -48,7 +53,10 @@ export class Category extends NanoidEntity {
     @OneToMany(() => Category, (category) => category.parent)
     children!: Category[];
 
-    @OneToMany(() => CategoryAttribute, (categoryAttribute) => categoryAttribute.category)
+    @OneToMany(
+        () => CategoryAttribute,
+        (categoryAttribute) => categoryAttribute.category,
+    )
     categoryAttributes!: CategoryAttribute[];
 
     @CreateDateColumn({ name: 'created_at' })

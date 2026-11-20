@@ -102,7 +102,9 @@ export class AttributesController {
     @Roles(Role.ADMIN)
     @ApiBearerAuth('jwt')
     @ApiOperation({ summary: 'غیرفعال‌سازی گزینه ویژگی (فقط مدیر)' })
-    deactivateOption(@Param('optionId', new ParseEntityIdPipe()) optionId: string) {
+    deactivateOption(
+        @Param('optionId', new ParseEntityIdPipe()) optionId: string,
+    ) {
         return this.attributesService.deactivateOption(optionId);
     }
 }

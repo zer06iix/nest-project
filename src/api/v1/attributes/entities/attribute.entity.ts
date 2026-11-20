@@ -11,7 +11,6 @@ import { AttributeOption } from './attribute-option.entity';
 import { AttributeDataType } from '../enums/attribute-datatype.enum';
 import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
-
 @Entity('attributes')
 @Index('uq_attributes_slug', ['slug'], { unique: true })
 export class Attribute extends NanoidEntity {
@@ -36,7 +35,10 @@ export class Attribute extends NanoidEntity {
     @OneToMany(() => AttributeOption, (option) => option.attribute)
     options!: AttributeOption[];
 
-    @OneToMany(() => CategoryAttribute, (categoryAttribute) => categoryAttribute.attribute)
+    @OneToMany(
+        () => CategoryAttribute,
+        (categoryAttribute) => categoryAttribute.attribute,
+    )
     categoryAttributes!: CategoryAttribute[];
 
     @CreateDateColumn({ name: 'created_at' })

@@ -12,13 +12,16 @@ import { Category } from '../../categories/entities/category.entity';
 import { AttributeDisplayType } from '../enums/attribute-display-type.enum';
 import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
-
 @Entity('category_attribute')
-@Index('uq_category_attribute_category_attribute', ['categoryId', 'attributeId'], { unique: true })
+@Index(
+    'uq_category_attribute_category_attribute',
+    ['categoryId', 'attributeId'],
+    { unique: true },
+)
 export class CategoryAttribute extends NanoidEntity {
     @Column({ name: 'is_required', default: false })
     isRequired!: boolean;
-    
+
     @Column({ name: 'is_filterable', default: false })
     isFilterable!: boolean;
 
@@ -53,7 +56,7 @@ export class CategoryAttribute extends NanoidEntity {
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
-    
+
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
 }

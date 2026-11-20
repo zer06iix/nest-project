@@ -1,4 +1,11 @@
-import { IsBoolean, IsEnum, IsInt, IsOptional, Matches, Min } from 'class-validator';
+import {
+    IsBoolean,
+    IsEnum,
+    IsInt,
+    IsOptional,
+    Matches,
+    Min,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { AttributeDisplayType } from '../enums/attribute-display-type.enum';
 import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
@@ -18,12 +25,16 @@ export class CreateCategoryAttributeDto {
     @IsBoolean()
     isFilterable?: boolean;
 
-    @ApiPropertyOptional({ description: 'آیا این ویژگی روی کارت نمایش داده می‌شود؟' })
+    @ApiPropertyOptional({
+        description: 'آیا این ویژگی روی کارت نمایش داده می‌شود؟',
+    })
     @IsOptional()
     @IsBoolean()
     isVisibleOnCard?: boolean;
 
-    @ApiPropertyOptional({ description: 'آیا این ویژگی در صفحه محصول نمایش داده می‌شود؟' })
+    @ApiPropertyOptional({
+        description: 'آیا این ویژگی در صفحه محصول نمایش داده می‌شود؟',
+    })
     @IsOptional()
     @IsBoolean()
     isVisibleOnProduct?: boolean;

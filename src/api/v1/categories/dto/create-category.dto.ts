@@ -12,14 +12,18 @@ import { ENTITY_ID_PATTERN } from '../../common/utils/entity-id';
 
 export class CreateCategoryDto {
     @ApiProperty({ maxLength: 120 })
-    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
+    @Transform(({ value }: { value: unknown }) =>
+        typeof value === 'string' ? value.trim() : value,
+    )
     @IsString()
     @MinLength(1)
     @MaxLength(120)
     name!: string;
 
     @ApiProperty({ maxLength: 140, example: 'mobile-phones' })
-    @Transform(({ value }) => typeof value === 'string' ? value.trim().toLowerCase() : value)
+    @Transform(({ value }: { value: unknown }) =>
+        typeof value === 'string' ? value.trim().toLowerCase() : value,
+    )
     @IsString()
     @MinLength(1)
     @MaxLength(140)
