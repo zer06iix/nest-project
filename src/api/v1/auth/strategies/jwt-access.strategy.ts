@@ -4,9 +4,11 @@ import { ConfigService } from '@nestjs/config';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { TokenBlacklistService } from '../blacklist/token-blacklist.service';
 
-
 @Injectable()
-export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') {
+export class JwtAccessStrategy extends PassportStrategy(
+    Strategy,
+    'jwt-access',
+) {
     constructor(
         configService: ConfigService,
         private readonly tokenBlacklistService: TokenBlacklistService,
@@ -14,20 +16,22 @@ export class JwtAccessStrategy extends PassportStrategy(Strategy, 'jwt-access') 
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             ignoreExpiration: false,
-            secretOrKey: configService.getOrThrow<string>('JWT_ACCESS_SECRET')
-        })
+            secretOrKey: configService.getOrThrow<string>('JWT_ACCESS_SECRET'),
+        });
     }
 
-    async validate(payload: any) {const isBlacklisted = await this.tokenBlacklistService.isBlacklisted(payload.jti);
+    validate(payload: Record<string, unknown>) {
+        const isBlacklisted = this.tokenBlacklistService.isBlacklisted(
+            payload.jti as string,
+        );
 
-        if (isBlacklisted)
-            throw new UnauthorizedException('دوباره وارد شوید');
+        if (isBlacklisted) throw new UnauthorizedException('دوباره وارد شوید');
 
         return {
-            userId: payload.sub,
-            phone_number: payload.phone_number,
-            display_name: payload.display_name,
-            role: payload.role,
-        }
+            id: payload.sub as string,
+            phone_number: payload.phone_number as string,
+            display_name: payload.display_name as string,
+            role: payload.role as string,
+        };
     }
 }
