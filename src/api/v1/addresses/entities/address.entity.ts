@@ -5,34 +5,33 @@ import {
     UpdateDateColumn,
     ManyToOne,
     JoinColumn,
-} from "typeorm";
-import { User } from "../../users/entities/user.entity";
-import { NanoidEntity } from "../../common/entities/nanoid.entity";
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
-
-@Entity("addresses")
+@Entity('addresses')
 export class Address extends NanoidEntity {
     @Column({ nullable: false })
-    province!: string
+    province!: string;
 
     @Column({ nullable: false })
-    city!: string
+    city!: string;
 
     @Column({ nullable: false })
-    address!: string
+    address!: string;
 
     @Column({ name: 'postal_code', length: 10 })
-    postalCode!: string
+    postalCode!: string;
 
-    @Column({ name: 'receiver_mobile', length: 11})
-    receiverMobile!: string
+    @Column({ name: 'receiver_mobile', length: 11 })
+    receiverMobile!: string;
 
     @Column({ nullable: true })
-    description!: string
+    description!: string;
 
     @ManyToOne(() => User, (user) => user.addresses)
     @JoinColumn({ name: 'user_id' })
-    user!: User
+    user!: User;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
