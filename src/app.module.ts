@@ -13,6 +13,7 @@ import { CategoriesModule } from './api/v1/categories/categories.module';
 import { AttributesModule } from './api/v1/attributes/attributes.module';
 import { ProductsModule } from './api/v1/products/products.module';
 import { StoresModule } from './api/v1/stores/stores.module';
+import { CartModule } from 'api/v1/cart/cart.module';
 
 @Module({
     imports: [
@@ -34,9 +35,9 @@ import { StoresModule } from './api/v1/stores/stores.module';
                 database: configService.get<string>('DB_DATABASE'),
                 // autoLoadEntities: true,
                 entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-                migrationsRun: true,
-                synchronize: false,
+                // migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+                // migrationsRun: true,
+                synchronize: true,
             }),
         }),
 
@@ -50,6 +51,7 @@ import { StoresModule } from './api/v1/stores/stores.module';
         AttributesModule,
         ProductsModule,
         StoresModule,
+        CartModule,
     ],
 })
 export class AppModule {
