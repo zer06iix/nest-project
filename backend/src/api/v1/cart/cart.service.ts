@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from './entities/cart-item.entity';
-import { CreateCartDto } from './dto/create-cart.dto';
 import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { CartStatus } from './enums/cart-status.enum';
@@ -17,9 +16,7 @@ export class CartService {
         private readonly cartItemRepository: Repository<CartItem>,
     ) {}
 
-    async create(dto: CreateCartDto): Promise<Cart> {
-        const { userId, sessionId } = dto;
-
+    async create(userId: string | undefined, sessionId: string | undefined): Promise<Cart> {
         if (!userId && !sessionId) {
             throw new Error('Either userId or sessionId must be provided');
         }
@@ -77,7 +74,7 @@ export class CartService {
         if (userId) {
             let cart = await this.findByUserId(userId);
             if (!cart) {
-                cart = await this.create({ userId });
+                cart = await this.create(userId, undefined);
             }
             return cart;
         }
@@ -85,7 +82,7 @@ export class CartService {
         if (sessionId) {
             let cart = await this.findBySessionId(sessionId);
             if (!cart) {
-                cart = await this.create({ sessionId });
+                cart = await this.create(undefined, sessionId);
             }
             return cart;
         }

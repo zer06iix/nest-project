@@ -10,6 +10,9 @@ import {
     HttpCode,
     HttpStatus,
     Headers,
+    UnauthorizedException,
+    BadRequestException,
+    UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiCookieAuth, ApiHeader } from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
@@ -19,12 +22,15 @@ import { AddCartItemDto } from './dto/add-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { CartResponseDto } from './dto/cart.response.dto';
 import { Cart } from './entities/cart.entity';
+import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
+import { JwtOptionalGuard } from '../auth/guards/jwt-optional.guard';
+import { RoleGuard } from '../common/guards/role.guard';
 
 const CART_SESSION_COOKIE = 'cart_session_id';
 const CART_SESSION_HEADER = 'x-cart-session-id';
 
 @ApiTags('سبد خرید')
-@ApiBearerAuth()
+@ApiBearerAuth('jwt')
 @ApiCookieAuth(CART_SESSION_COOKIE)
 @ApiHeader({
     name: CART_SESSION_HEADER,
@@ -32,6 +38,7 @@ const CART_SESSION_HEADER = 'x-cart-session-id';
     description: 'شناسه نشست سبد خرید برای کاربران مهمان',
 })
 @Controller('cart')
+@UseGuards(JwtOptionalGuard)
 export class CartController {
     constructor(private readonly cartService: CartService) {}
 
@@ -60,9 +67,9 @@ export class CartController {
         @Headers(CART_SESSION_HEADER) headerSessionId: string | undefined,
         @Body() dto: CreateCartDto,
     ): Promise<CartResponseDto> {
-        const userId = this.getUserId(req) || dto.userId;
-        const sessionId = dto.sessionId || this.getSessionId(req, headerSessionId);
-        const cart = await this.cartService.create({ userId, sessionId });
+        const userId = this.getUserId(req);
+        const sessionId = this.getSessionId(req, headerSessionId);
+        const cart = await this.cartService.create(userId, sessionId);
         return this.toResponse(cart);
     }
 
@@ -156,19 +163,20 @@ export class CartController {
     }
 
     @Post('merge')
+    @HttpCode(HttpStatus.OK)
+    @UseGuards(JwtAccessGuard, RoleGuard)
     @ApiOperation({ summary: 'ادغام سبد خرید مهمان به سبد کاربر لاگین شده' })
-    @ApiBearerAuth()
     async mergeGuestCart(
         @Req() req: any,
         @Headers(CART_SESSION_HEADER) headerSessionId: string | undefined,
     ): Promise<CartResponseDto> {
         const userId = this.getUserId(req);
         if (!userId) {
-            throw new Error('User must be authenticated to merge cart');
+            throw new UnauthorizedException('لطفا برای ادغام سبد خرید وارد حساب خود شوید');
         }
         const sessionId = this.getSessionId(req, headerSessionId);
         if (!sessionId) {
-            throw new Error('No guest cart session found');
+            throw new BadRequestException('شناسه سبد خرید مهمان یافت نشد');
         }
         const cart = await this.cartService.mergeGuestCartToUser(sessionId, userId);
         return this.toResponse(cart);
