@@ -1,0 +1,5 @@
+export declare enum StoreStatus {
+    PENDING = "PENDING",
+    ACTIVE = "ACTIVE",
+    SUSPENDED = "SUSPENDED"
+}

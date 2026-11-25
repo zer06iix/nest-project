@@ -1,4 +1,4 @@
 allowBuilds:
-  '@parcel/watcher': false
-  '@scarf/scarf': false
-  '@sentry/node-cpu-profiler': false
+    '@parcel/watcher': false
+    '@scarf/scarf': false
+    '@sentry/node-cpu-profiler': false
