@@ -10,8 +10,8 @@ import { JwtAccessGuard } from '../auth/guards/jwt-access.guard';
 import { RoleGuard } from '../common/guards/role.guard';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Category, CategoryAttribute, Attribute]), UsersModule],
-    controllers: [CategoriesController],
-    providers: [CategoriesService, JwtAccessGuard, RoleGuard],
+	imports: [TypeOrmModule.forFeature([Category, CategoryAttribute, Attribute]), UsersModule],
+	controllers: [CategoriesController],
+	providers: [CategoriesService, JwtAccessGuard, RoleGuard],
 })
 export class CategoriesModule {}

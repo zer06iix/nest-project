@@ -1,4 +1,4 @@
-import { AdminRouter } from "@/components/admin-ui";
+import { AdminRouter } from '@/components/admin-ui'
 export default function AdminPage() {
-  return <AdminRouter />;
+	return <AdminRouter />
 }

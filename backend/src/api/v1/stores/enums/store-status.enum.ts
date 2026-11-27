@@ -1,5 +1,5 @@
 export enum StoreStatus {
-    PENDING = 'PENDING',
-    ACTIVE = 'ACTIVE',
-    SUSPENDED = 'SUSPENDED',
+	PENDING = 'PENDING',
+	ACTIVE = 'ACTIVE',
+	SUSPENDED = 'SUSPENDED',
 }

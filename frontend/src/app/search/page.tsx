@@ -1,9 +1,9 @@
-import { Header, SearchResults } from "@/components/marketplace";
+import { Header, SearchResults } from '@/components/marketplace'
 export default function SearchPage() {
-  return (
-    <>
-      <Header />
-      <SearchResults />
-    </>
-  );
+	return (
+		<>
+			<Header />
+			<SearchResults />
+		</>
+	)
 }

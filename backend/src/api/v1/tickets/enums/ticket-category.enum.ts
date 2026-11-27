@@ -1,5 +1,5 @@
 export enum TicketCategory {
-    ORDER = 'order',
+	ORDER = 'order',
 }
 
 export const categories = [TicketCategory.ORDER];

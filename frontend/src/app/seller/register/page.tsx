@@ -1,4 +1,4 @@
-import { SellerRegisterForm } from "@/components/auth-forms";
+import { SellerRegisterForm } from '@/components/auth-forms'
 export default function SellerRegisterPage() {
-  return <SellerRegisterForm />;
+	return <SellerRegisterForm />
 }

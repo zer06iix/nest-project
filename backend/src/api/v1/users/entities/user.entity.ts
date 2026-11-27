@@ -7,40 +7,40 @@ import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 @Entity('users')
 export class User extends NanoidEntity {
-    @Column({ name: 'phone_number', unique: true })
-    phoneNumber!: string;
+	@Column({ name: 'phone_number', unique: true })
+	phoneNumber!: string;
 
-    @Column({ name: 'display_name', nullable: false })
-    displayName!: string;
+	@Column({ name: 'display_name', nullable: false })
+	displayName!: string;
 
-    @Column({
-        type: 'enum',
-        enum: Role,
-        default: Role.USER,
-    })
-    role!: Role;
+	@Column({
+		type: 'enum',
+		enum: Role,
+		default: Role.USER,
+	})
+	role!: Role;
 
-    @Column({ nullable: true })
-    password!: string;
+	@Column({ nullable: true })
+	password!: string;
 
-    @OneToMany(() => Address, (address) => address.user)
-    addresses!: Address[];
+	@OneToMany(() => Address, (address) => address.user)
+	addresses!: Address[];
 
-    @OneToMany(() => Ticket, (ticket) => ticket.user)
-    ticketsCreated!: Ticket[];
+	@OneToMany(() => Ticket, (ticket) => ticket.user)
+	ticketsCreated!: Ticket[];
 
-    @OneToMany(() => Ticket, (ticket) => ticket.assignedTo)
-    ticketsAssigned!: Ticket[];
+	@OneToMany(() => Ticket, (ticket) => ticket.assignedTo)
+	ticketsAssigned!: Ticket[];
 
-    @OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.sender)
-    ticketMessages!: TicketMessage[];
+	@OneToMany(() => TicketMessage, (ticketMessages) => ticketMessages.sender)
+	ticketMessages!: TicketMessage[];
 
-    @Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
-    hashedRefreshToken!: string | null;
+	@Column({ type: 'varchar', name: 'hashed_refresh_token', nullable: true })
+	hashedRefreshToken!: string | null;
 
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt!: Date;
+	@CreateDateColumn({ name: 'created_at' })
+	createdAt!: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt!: Date;
+	@UpdateDateColumn({ name: 'updated_at' })
+	updatedAt!: Date;
 }

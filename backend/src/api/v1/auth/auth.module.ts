@@ -10,8 +10,8 @@ import { JwtOptionalStrategy } from './strategies/jwt-optional.strategy';
 import { TokenBlacklistModule } from './blacklist/token-blacklist.module';
 
 @Module({
-    imports: [UsersModule, PassportModule, TokenBlacklistModule, JwtModule.register({})],
-    controllers: [AuthController],
-    providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy, JwtOptionalStrategy],
+	imports: [UsersModule, PassportModule, TokenBlacklistModule, JwtModule.register({})],
+	controllers: [AuthController],
+	providers: [AuthService, JwtAccessStrategy, JwtRefreshStrategy, JwtOptionalStrategy],
 })
 export class AuthModule {}

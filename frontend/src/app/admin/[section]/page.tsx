@@ -1,9 +1,9 @@
-import { AdminRouter } from "@/components/admin-ui";
+import { AdminRouter } from '@/components/admin-ui'
 export default async function AdminSectionPage({
-  params,
+	params,
 }: {
-  params: Promise<{ section: string }>;
+	params: Promise<{ section: string }>
 }) {
-  const { section } = await params;
-  return <AdminRouter section={section} />;
+	const { section } = await params
+	return <AdminRouter section={section} />
 }

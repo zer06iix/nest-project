@@ -8,73 +8,73 @@ import { AllExceptionsFilter } from './api/v1/common/filters/http-exception.filt
 import cookieParser from 'cookie-parser';
 
 interface HotModule {
-    hot?: {
-        accept: () => void;
-        dispose: (callback: () => Promise<void>) => void;
-    };
+	hot?: {
+		accept: () => void;
+		dispose: (callback: () => Promise<void>) => void;
+	};
 }
 
 declare const module: HotModule;
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule);
-    app.use(cookieParser());
-    app.enableCors({
-      origin: process.env.CORS_ORIGIN ?? "http://localhost:3001",
-      credentials: true,
-    });
+	const app = await NestFactory.create(AppModule);
+	app.use(cookieParser());
+	app.enableCors({
+		origin: process.env.CORS_ORIGIN ?? 'http://localhost:3001',
+		credentials: true,
+	});
 
-    if (module.hot) {
-        module.hot.accept();
-        module.hot.dispose(() => app.close());
-    }
+	if (module.hot) {
+		module.hot.accept();
+		module.hot.dispose(() => app.close());
+	}
 
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-        }),
-    );
-    app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
-    app.useGlobalFilters(new AllExceptionsFilter());
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+			forbidNonWhitelisted: true,
+			transform: true,
+		}),
+	);
+	app.useGlobalInterceptors(new TransformInterceptor(new Reflector()));
+	app.useGlobalFilters(new AllExceptionsFilter());
 
-    app.setGlobalPrefix('api');
+	app.setGlobalPrefix('api');
 
-    app.enableVersioning({
-        type: VersioningType.URI,
-        defaultVersion: process.env.API_VERSION,
-    });
+	app.enableVersioning({
+		type: VersioningType.URI,
+		defaultVersion: process.env.API_VERSION,
+	});
 
-    const config = new DocumentBuilder()
-        .setTitle('فروشگاه لباس api')
-        .setDescription('برای کلاینت api مستندات و راهنمای مسیر های')
-        .setVersion('1.0.0')
-        .addBearerAuth(
-            {
-                type: 'http',
-                scheme: 'bearer',
-                bearerFormat: 'JWT',
-                name: 'JWT',
-                description: 'توکن دسترسی JWT را وارد کنید',
-                in: 'header',
-            },
-            'jwt',
-        )
-        // .addApiKey(
-        //     {
-        //         type: 'apiKey',
-        //         name: 'X-API-Key',
-        //         in: 'header',
-        //     },
-        //     'api-key',
-        // )
-        .build();
-    const documentFactory = () => SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api/v1/documents', app, documentFactory, {
-        customSiteTitle: 'مستندات فروشگاه',
-    });
+	const config = new DocumentBuilder()
+		.setTitle('فروشگاه لباس api')
+		.setDescription('برای کلاینت api مستندات و راهنمای مسیر های')
+		.setVersion('1.0.0')
+		.addBearerAuth(
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				name: 'JWT',
+				description: 'توکن دسترسی JWT را وارد کنید',
+				in: 'header',
+			},
+			'jwt',
+		)
+		// .addApiKey(
+		//     {
+		//         type: 'apiKey',
+		//         name: 'X-API-Key',
+		//         in: 'header',
+		//     },
+		//     'api-key',
+		// )
+		.build();
+	const documentFactory = () => SwaggerModule.createDocument(app, config);
+	SwaggerModule.setup('api/v1/documents', app, documentFactory, {
+		customSiteTitle: 'مستندات فروشگاه',
+	});
 
-    await app.listen(process.env.PORT ?? 3000);
+	await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();

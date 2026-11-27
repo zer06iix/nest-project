@@ -1,0 +1,12 @@
+# Dependency directories
+node_modules
+
+# NestJS build output
+/dist
+/build
+/out
+
+# Misc
+coverage
+*.log
+.env

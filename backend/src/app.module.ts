@@ -16,46 +16,46 @@ import { StoresModule } from './api/v1/stores/stores.module';
 import { CartModule } from 'api/v1/cart/cart.module';
 
 @Module({
-    imports: [
-        ConfigModule.forRoot({
-            isGlobal: true,
-        }),
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true,
+		}),
 
-        // SentryModule.forRoot(),
+		// SentryModule.forRoot(),
 
-        TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => ({
-                type: 'postgres',
-                host: configService.get<string>('DB_HOST'),
-                port: configService.get<number>('DB_PORT'),
-                username: configService.get<string>('DB_USERNAME'),
-                password: configService.get<string>('DB_PASSWORD'),
-                database: configService.get<string>('DB_DATABASE'),
-                // autoLoadEntities: true,
-                entities: [__dirname + '/**/*.entity{.ts,.js}'],
-                // migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
-                // migrationsRun: true,
-                synchronize: true,
-            }),
-        }),
+		TypeOrmModule.forRootAsync({
+			imports: [ConfigModule],
+			inject: [ConfigService],
+			useFactory: (configService: ConfigService) => ({
+				type: 'postgres',
+				host: configService.get<string>('DB_HOST'),
+				port: configService.get<number>('DB_PORT'),
+				username: configService.get<string>('DB_USERNAME'),
+				password: configService.get<string>('DB_PASSWORD'),
+				database: configService.get<string>('DB_DATABASE'),
+				// autoLoadEntities: true,
+				entities: [__dirname + '/**/*.entity{.ts,.js}'],
+				// migrations: [__dirname + '/database/migrations/*{.ts,.js}'],
+				// migrationsRun: true,
+				synchronize: true,
+			}),
+		}),
 
-        UsersModule,
-        AuthModule,
-        AddressesModule,
-        TicketsModule,
-        // RedisModule,
-        TokenBlacklistModule,
-        CategoriesModule,
-        AttributesModule,
-        ProductsModule,
-        StoresModule,
-        CartModule,
-    ],
+		UsersModule,
+		AuthModule,
+		AddressesModule,
+		TicketsModule,
+		// RedisModule,
+		TokenBlacklistModule,
+		CategoriesModule,
+		AttributesModule,
+		ProductsModule,
+		StoresModule,
+		CartModule,
+	],
 })
 export class AppModule {
-    configure(consumer: MiddlewareConsumer) {
-        consumer.apply(LoggerMiddleware).forRoutes('users', 'addresses', 'tickets');
-    }
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(LoggerMiddleware).forRoutes('users', 'addresses', 'tickets');
+	}
 }

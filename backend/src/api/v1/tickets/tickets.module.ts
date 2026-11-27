@@ -8,8 +8,8 @@ import { User } from '../users/entities/user.entity';
 import { TicketMessage } from './entities/ticket-messages.entity';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Ticket, TicketMessage, User]), UsersModule],
-    controllers: [TicketsController],
-    providers: [TicketsService],
+	imports: [TypeOrmModule.forFeature([Ticket, TicketMessage, User]), UsersModule],
+	controllers: [TicketsController],
+	providers: [TicketsService],
 })
 export class TicketsModule {}

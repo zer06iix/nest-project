@@ -21,25 +21,25 @@ import { BrandsService } from './brands.service';
 import { ProductsService } from './products.service';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Brand,
-            Product,
-            ProductVariant,
-            ProductImage,
-            ProductAttributeValue,
-            VariantAttributeValue,
-            ProductIdentifier,
-            Category,
-            CategoryAttribute,
-            Attribute,
-            AttributeOption,
-            StoreProduct,
-        ]),
-        UsersModule,
-    ],
-    controllers: [BrandsController, ProductsController],
-    providers: [BrandsService, ProductsService, JwtAccessGuard, RoleGuard],
-    exports: [ProductsService],
+	imports: [
+		TypeOrmModule.forFeature([
+			Brand,
+			Product,
+			ProductVariant,
+			ProductImage,
+			ProductAttributeValue,
+			VariantAttributeValue,
+			ProductIdentifier,
+			Category,
+			CategoryAttribute,
+			Attribute,
+			AttributeOption,
+			StoreProduct,
+		]),
+		UsersModule,
+	],
+	controllers: [BrandsController, ProductsController],
+	providers: [BrandsService, ProductsService, JwtAccessGuard, RoleGuard],
+	exports: [ProductsService],
 })
 export class ProductsModule {}

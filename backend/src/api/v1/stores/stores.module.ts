@@ -14,19 +14,19 @@ import { StoresService } from './stores.service';
 import { StoreProductsController } from './store-products.controller';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([
-            Store,
-            StoreProduct,
-            Product,
-            ProductVariant,
-            Price,
-            PriceHistory,
-        ]),
-        UsersModule,
-    ],
-    controllers: [StoresController, StoreProductsController],
-    providers: [StoresService, JwtAccessGuard, RoleGuard],
-    exports: [StoresService],
+	imports: [
+		TypeOrmModule.forFeature([
+			Store,
+			StoreProduct,
+			Product,
+			ProductVariant,
+			Price,
+			PriceHistory,
+		]),
+		UsersModule,
+	],
+	controllers: [StoresController, StoreProductsController],
+	providers: [StoresService, JwtAccessGuard, RoleGuard],
+	exports: [StoresService],
 })
 export class StoresModule {}

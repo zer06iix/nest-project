@@ -1,0 +1,16 @@
+# Dependency directories
+node_modules
+
+# Build outputs
+/dist
+/build
+.next
+/out
+
+# Misc
+coverage
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

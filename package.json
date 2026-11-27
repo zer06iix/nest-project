@@ -1,40 +1,40 @@
 {
-    "name": "nest-project",
-    "version": "0.0.1",
-    "private": true,
-    "description": "Monorepo root: Next.js frontend + NestJS backend",
-    "author": "",
-    "license": "UNLICENSED",
-    "scripts": {
-        "dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
-        "dev:frontend": "pnpm --dir frontend dev",
-        "dev:backend": "pnpm --dir backend dev",
-        "build": "concurrently \"npm:build:frontend\" \"npm:build:backend\"",
-        "build:frontend": "pnpm --dir frontend build",
-        "build:backend": "pnpm --dir backend build",
-        "start": "concurrently \"npm:start:frontend\" \"npm:start:backend\"",
-        "start:frontend": "pnpm --dir frontend start",
-        "start:backend": "pnpm --dir backend start",
-        "test": "concurrently \"npm:test:frontend\" \"npm:test:backend\"",
-        "test:all": "npm run test",
-        "test:frontend": "pnpm --dir frontend test",
-        "test:backend": "pnpm --dir backend test",
-        "lint": "concurrently \"npm:lint:frontend\" \"npm:lint:backend\"",
-        "lint:frontend": "pnpm --dir frontend lint",
-        "lint:backend": "pnpm --dir backend lint",
-        "format": "concurrently \"npm:format:root\" \"npm:format:shared\" \"npm:format:frontend\" \"npm:format:backend\"",
-        "format:all": "npm run format",
-        "format:root": "prettier --write --config shared/.prettierrc \"*.{md,json,yml,yaml}\" \"!pnpm-lock.yaml\"",
-        "format:shared": "prettier --write --config shared/.prettierrc \"shared/**/*\"",
-        "format:frontend": "prettier --write --config frontend/.prettierrc \"frontend/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-        "format:backend": "prettier --write --config backend/.prettierrc \"backend/src/**/*.ts\" \"backend/*.{json,ts,js,mjs,cjs}\""
-    },
-    "devDependencies": {
-        "concurrently": "^9.1.0",
-        "prettier": "^3.4.2"
-    },
-    "packageManager": "pnpm@12.21.0",
-    "engines": {
-        "node": ">=20"
-    }
+	"name": "nest-project",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Monorepo root: Next.js frontend + NestJS backend",
+	"author": "",
+	"license": "UNLICENSED",
+	"scripts": {
+		"dev": "concurrently \"npm:dev:frontend\" \"npm:dev:backend\"",
+		"dev:frontend": "pnpm --dir frontend dev",
+		"dev:backend": "pnpm --dir backend dev",
+		"build": "concurrently \"npm:build:frontend\" \"npm:build:backend\"",
+		"build:frontend": "pnpm --dir frontend build",
+		"build:backend": "pnpm --dir backend build",
+		"start": "concurrently \"npm:start:frontend\" \"npm:start:backend\"",
+		"start:frontend": "pnpm --dir frontend start",
+		"start:backend": "pnpm --dir backend start",
+		"test": "concurrently \"npm:test:frontend\" \"npm:test:backend\"",
+		"test:all": "npm run test",
+		"test:frontend": "pnpm --dir frontend test",
+		"test:backend": "pnpm --dir backend test",
+		"lint": "concurrently \"npm:lint:frontend\" \"npm:lint:backend\"",
+		"lint:frontend": "pnpm --dir frontend lint",
+		"lint:backend": "pnpm --dir backend lint",
+		"format": "concurrently \"npm:format:root\" \"npm:format:shared\" \"npm:format:frontend\" \"npm:format:backend\"",
+		"format:all": "npm run format",
+		"format:root": "prettier --write --config shared/.prettierrc \"*.{md,json,yml,yaml}\" \"!pnpm-lock.yaml\"",
+		"format:shared": "prettier --write --config shared/.prettierrc \"shared/**/*\"",
+		"format:frontend": "prettier --write --config frontend/.prettierrc \"frontend/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+		"format:backend": "prettier --write --config backend/.prettierrc \"backend/src/**/*.ts\" \"backend/*.{json,ts,js,mjs,cjs}\""
+	},
+	"devDependencies": {
+		"concurrently": "^9.1.0",
+		"prettier": "^3.4.2"
+	},
+	"packageManager": "pnpm@12.21.0",
+	"engines": {
+		"node": ">=20"
+	}
 }

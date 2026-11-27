@@ -4,31 +4,31 @@ import { NanoidEntity } from '../../common/entities/nanoid.entity';
 
 @Entity('addresses')
 export class Address extends NanoidEntity {
-    @Column({ nullable: false })
-    province!: string;
+	@Column({ nullable: false })
+	province!: string;
 
-    @Column({ nullable: false })
-    city!: string;
+	@Column({ nullable: false })
+	city!: string;
 
-    @Column({ nullable: false })
-    address!: string;
+	@Column({ nullable: false })
+	address!: string;
 
-    @Column({ name: 'postal_code', length: 10 })
-    postalCode!: string;
+	@Column({ name: 'postal_code', length: 10 })
+	postalCode!: string;
 
-    @Column({ name: 'receiver_mobile', length: 11 })
-    receiverMobile!: string;
+	@Column({ name: 'receiver_mobile', length: 11 })
+	receiverMobile!: string;
 
-    @Column({ nullable: true })
-    description!: string;
+	@Column({ nullable: true })
+	description!: string;
 
-    @ManyToOne(() => User, (user) => user.addresses)
-    @JoinColumn({ name: 'user_id' })
-    user!: User;
+	@ManyToOne(() => User, (user) => user.addresses)
+	@JoinColumn({ name: 'user_id' })
+	user!: User;
 
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt!: Date;
+	@CreateDateColumn({ name: 'created_at' })
+	createdAt!: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt!: Date;
+	@UpdateDateColumn({ name: 'updated_at' })
+	updatedAt!: Date;
 }

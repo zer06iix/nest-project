@@ -5,26 +5,26 @@ import { Cart } from './cart.entity';
 
 @Entity('cart_item')
 export class CartItem extends Nanoid8Entity {
-    @Column({ name: 'cart_id', type: 'varchar', length: 8 })
-    cartId!: string;
+	@Column({ name: 'cart_id', type: 'varchar', length: 8 })
+	cartId!: string;
 
-    @ManyToOne(() => Cart, (cart) => cart.items)
-    @JoinColumn({ name: 'cart_id' })
-    cart!: Cart;
+	@ManyToOne(() => Cart, (cart) => cart.items)
+	@JoinColumn({ name: 'cart_id' })
+	cart!: Cart;
 
-    @Column({ name: 'store_product_id', type: 'varchar', length: 8 })
-    storeProductId!: string;
+	@Column({ name: 'store_product_id', type: 'varchar', length: 8 })
+	storeProductId!: string;
 
-    @ManyToOne(() => StoreProduct)
-    @JoinColumn({ name: 'store_product_id' })
-    storeProduct!: StoreProduct;
+	@ManyToOne(() => StoreProduct)
+	@JoinColumn({ name: 'store_product_id' })
+	storeProduct!: StoreProduct;
 
-    @Column({ name: 'quantity', type: 'integer' })
-    quantity!: number;
+	@Column({ name: 'quantity', type: 'integer' })
+	quantity!: number;
 
-    @CreateDateColumn({ name: 'created_at' })
-    createdAt!: Date;
+	@CreateDateColumn({ name: 'created_at' })
+	createdAt!: Date;
 
-    @UpdateDateColumn({ name: 'updated_at' })
-    updatedAt!: Date;
+	@UpdateDateColumn({ name: 'updated_at' })
+	updatedAt!: Date;
 }

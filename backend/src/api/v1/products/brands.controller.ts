@@ -12,44 +12,44 @@ import { UpdateBrandDto } from './dto/update-brand.dto';
 @ApiTags('برندها')
 @Controller({ path: 'brands', version: '1' })
 export class BrandsController {
-    constructor(private readonly brandsService: BrandsService) {}
+	constructor(private readonly brandsService: BrandsService) {}
 
-    @Post()
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'ایجاد برند (فقط مدیر)' })
-    create(@Body() dto: CreateBrandDto) {
-        return this.brandsService.create(dto);
-    }
+	@Post()
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'ایجاد برند (فقط مدیر)' })
+	create(@Body() dto: CreateBrandDto) {
+		return this.brandsService.create(dto);
+	}
 
-    @Get()
-    @ApiOperation({ summary: 'دریافت فهرست برندهای فعال' })
-    findAll() {
-        return this.brandsService.findAll();
-    }
+	@Get()
+	@ApiOperation({ summary: 'دریافت فهرست برندهای فعال' })
+	findAll() {
+		return this.brandsService.findAll();
+	}
 
-    @Get(':id')
-    @ApiOperation({ summary: 'دریافت برند فعال' })
-    findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
-        return this.brandsService.findOne(id);
-    }
+	@Get(':id')
+	@ApiOperation({ summary: 'دریافت برند فعال' })
+	findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
+		return this.brandsService.findOne(id);
+	}
 
-    @Patch(':id')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی برند (فقط مدیر)' })
-    update(@Param('id', new ParseEntityIdPipe()) id: string, @Body() dto: UpdateBrandDto) {
-        return this.brandsService.update(id, dto);
-    }
+	@Patch(':id')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'به‌روزرسانی برند (فقط مدیر)' })
+	update(@Param('id', new ParseEntityIdPipe()) id: string, @Body() dto: UpdateBrandDto) {
+		return this.brandsService.update(id, dto);
+	}
 
-    @Delete(':id')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'غیرفعال‌سازی برند (فقط مدیر)' })
-    deactivate(@Param('id', new ParseEntityIdPipe()) id: string) {
-        return this.brandsService.deactivate(id);
-    }
+	@Delete(':id')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'غیرفعال‌سازی برند (فقط مدیر)' })
+	deactivate(@Param('id', new ParseEntityIdPipe()) id: string) {
+		return this.brandsService.deactivate(id);
+	}
 }

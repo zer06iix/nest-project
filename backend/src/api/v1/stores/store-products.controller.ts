@@ -16,89 +16,89 @@ import { QueryPriceHistoryDto } from './dto/query-price-history.dto';
 @ApiTags('محصولات فروشگاهی')
 @Controller({ path: 'store-products', version: '1' })
 export class StoreProductsController {
-    constructor(private readonly storesService: StoresService) {}
+	constructor(private readonly storesService: StoresService) {}
 
-    @Post()
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'ایجاد لیست محصول فروشگاه (فقط مدیر)' })
-    create(@Body() dto: CreateStoreProductDto) {
-        return this.storesService.createListingWithoutStoreParam(dto);
-    }
+	@Post()
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'ایجاد لیست محصول فروشگاه (فقط مدیر)' })
+	create(@Body() dto: CreateStoreProductDto) {
+		return this.storesService.createListingWithoutStoreParam(dto);
+	}
 
-    @Get()
-    @ApiOperation({ summary: 'جست‌وجو و فیلتر لیست‌های محصولات فروشگاه' })
-    findAll(@Query() query: QueryStoreProductsDto) {
-        return this.storesService.findAllListings(query);
-    }
+	@Get()
+	@ApiOperation({ summary: 'جست‌وجو و فیلتر لیست‌های محصولات فروشگاه' })
+	findAll(@Query() query: QueryStoreProductsDto) {
+		return this.storesService.findAllListings(query);
+	}
 
-    @Get(':id')
-    @ApiOperation({ summary: 'دریافت جزئیات لیست محصول فروشگاه' })
-    findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
-        return this.storesService.findListingById(id);
-    }
+	@Get(':id')
+	@ApiOperation({ summary: 'دریافت جزئیات لیست محصول فروشگاه' })
+	findOne(@Param('id', new ParseEntityIdPipe()) id: string) {
+		return this.storesService.findListingById(id);
+	}
 
-    @Patch(':id')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی لیست محصول فروشگاه (فقط مدیر)' })
-    update(@Param('id', new ParseEntityIdPipe()) id: string, @Body() dto: UpdateStoreProductDto) {
-        return this.storesService.updateListingById(id, dto);
-    }
+	@Patch(':id')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'به‌روزرسانی لیست محصول فروشگاه (فقط مدیر)' })
+	update(@Param('id', new ParseEntityIdPipe()) id: string, @Body() dto: UpdateStoreProductDto) {
+		return this.storesService.updateListingById(id, dto);
+	}
 
-    @Delete(':id')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'غیرفعال‌سازی لیست محصول فروشگاه (فقط مدیر)' })
-    remove(@Param('id', new ParseEntityIdPipe()) id: string) {
-        return this.storesService.deactivateListingById(id);
-    }
+	@Delete(':id')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'غیرفعال‌سازی لیست محصول فروشگاه (فقط مدیر)' })
+	remove(@Param('id', new ParseEntityIdPipe()) id: string) {
+		return this.storesService.deactivateListingById(id);
+	}
 
-    @Post(':storeProductId/price')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'ثبت قیمت اولیه لیست محصول (فقط مدیر)' })
-    createPrice(
-        @Param('storeProductId', new ParseEntityIdPipe())
-        storeProductId: string,
-        @Body() dto: UpdateStoreProductPriceDto,
-    ) {
-        return this.storesService.createPrice(storeProductId, dto);
-    }
+	@Post(':storeProductId/price')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'ثبت قیمت اولیه لیست محصول (فقط مدیر)' })
+	createPrice(
+		@Param('storeProductId', new ParseEntityIdPipe())
+		storeProductId: string,
+		@Body() dto: UpdateStoreProductPriceDto,
+	) {
+		return this.storesService.createPrice(storeProductId, dto);
+	}
 
-    @Patch(':storeProductId/price')
-    @UseGuards(JwtAccessGuard, RoleGuard)
-    @Roles(Role.ADMIN)
-    @ApiBearerAuth('jwt')
-    @ApiOperation({ summary: 'به‌روزرسانی قیمت فعلی لیست محصول (فقط مدیر)' })
-    updatePrice(
-        @Param('storeProductId', new ParseEntityIdPipe())
-        storeProductId: string,
-        @Body() dto: UpdateStoreProductPriceDto,
-    ) {
-        return this.storesService.updatePriceByListingId(storeProductId, dto);
-    }
+	@Patch(':storeProductId/price')
+	@UseGuards(JwtAccessGuard, RoleGuard)
+	@Roles(Role.ADMIN)
+	@ApiBearerAuth('jwt')
+	@ApiOperation({ summary: 'به‌روزرسانی قیمت فعلی لیست محصول (فقط مدیر)' })
+	updatePrice(
+		@Param('storeProductId', new ParseEntityIdPipe())
+		storeProductId: string,
+		@Body() dto: UpdateStoreProductPriceDto,
+	) {
+		return this.storesService.updatePriceByListingId(storeProductId, dto);
+	}
 
-    @Get(':storeProductId/price')
-    @ApiOperation({ summary: 'دریافت قیمت فعلی لیست محصول' })
-    getPrice(
-        @Param('storeProductId', new ParseEntityIdPipe())
-        storeProductId: string,
-    ) {
-        return this.storesService.getPrice(storeProductId);
-    }
+	@Get(':storeProductId/price')
+	@ApiOperation({ summary: 'دریافت قیمت فعلی لیست محصول' })
+	getPrice(
+		@Param('storeProductId', new ParseEntityIdPipe())
+		storeProductId: string,
+	) {
+		return this.storesService.getPrice(storeProductId);
+	}
 
-    @Get(':storeProductId/price-history')
-    @ApiOperation({ summary: 'دریافت تاریخچه قیمت لیست محصول' })
-    getPriceHistory(
-        @Param('storeProductId', new ParseEntityIdPipe())
-        storeProductId: string,
-        @Query() query: QueryPriceHistoryDto,
-    ) {
-        return this.storesService.priceHistoryByListingId(storeProductId, query);
-    }
+	@Get(':storeProductId/price-history')
+	@ApiOperation({ summary: 'دریافت تاریخچه قیمت لیست محصول' })
+	getPriceHistory(
+		@Param('storeProductId', new ParseEntityIdPipe())
+		storeProductId: string,
+		@Query() query: QueryPriceHistoryDto,
+	) {
+		return this.storesService.priceHistoryByListingId(storeProductId, query);
+	}
 }

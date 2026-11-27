@@ -1,11 +1,5 @@
-type PostCSSConfig = {
-  plugins: Record<string, Record<string, never>>;
-};
+type PostCSSConfig = { plugins: Record<string, Record<string, never>> }
 
-const config: PostCSSConfig = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
+const config: PostCSSConfig = { plugins: { '@tailwindcss/postcss': {} } }
 
-export default config;
+export default config
