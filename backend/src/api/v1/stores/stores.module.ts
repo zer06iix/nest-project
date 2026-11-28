@@ -9,6 +9,7 @@ import { Store } from './entities/store.entity';
 import { StoreProduct } from './entities/store-product.entity';
 import { Price } from './entities/price.entity';
 import { PriceHistory } from './entities/price-history.entity';
+import { ShippingMethod } from './entities/shipping-method.entity';
 import { StoresController } from './stores.controller';
 import { StoresService } from './stores.service';
 import { StoreProductsController } from './store-products.controller';
@@ -22,6 +23,7 @@ import { StoreProductsController } from './store-products.controller';
 			ProductVariant,
 			Price,
 			PriceHistory,
+			ShippingMethod,
 		]),
 		UsersModule,
 	],

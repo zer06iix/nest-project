@@ -14,6 +14,7 @@ import { AttributesModule } from './api/v1/attributes/attributes.module';
 import { ProductsModule } from './api/v1/products/products.module';
 import { StoresModule } from './api/v1/stores/stores.module';
 import { CartModule } from 'api/v1/cart/cart.module';
+import { CheckoutModule } from 'api/v1/checkout/checkout.module';
 
 @Module({
 	imports: [
@@ -52,6 +53,7 @@ import { CartModule } from 'api/v1/cart/cart.module';
 		ProductsModule,
 		StoresModule,
 		CartModule,
+		CheckoutModule,
 	],
 })
 export class AppModule {
